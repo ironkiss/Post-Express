@@ -13,15 +13,15 @@
           <ion-item no-lines>
             <ion-input type="text" placeholder="Пункт приёма" name="login"
               [formControl]="signInForm.controls['login']"
-              [ngClass]="{'error-border': !signInForm.controls['login'].valid && formSubmited}"
-              (input)="fieldChange($event)" required ></ion-input>
+              [ngClass]="{'error-border': signInForm.controls['login'].invalid && formSubmited}"
+              required ></ion-input>
           </ion-item>
 
           <ion-item no-lines>
             <ion-input type="password" placeholder="Пароль" name="password"
               [formControl]="signInForm.controls['password']"
-              [ngClass]="{'error-border': !signInForm.controls['password'].valid && formSubmited}"
-              (input)="fieldChange($event)" required></ion-input>
+              [ngClass]="{'error-border': signInForm.controls['password'].invalid && formSubmited}"
+              required></ion-input>
           </ion-item>
 
           <ion-item no-lines text-center>
