@@ -1,18 +1,76 @@
-<!--
-  Generated template for the BarcodeFormPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>barcodeForm</ion-title>
-  </ion-navbar>
-
-</ion-header>
-
-
-<ion-content padding>
-
+<ion-content>
+  <ion-grid>
+    <ion-row class="barcode">
+      <ion-col (click)="startScan()">
+        <img [src]="formData.barcode ? 'assets/img/barcode-success.png' : 'assets/img/barcode-start.png'">
+        <span *ngIf="formData.barcode" class="code">
+          {{ formData.barcode }}
+        </span>
+        <span *ngIf="!formData.barcode" class="code">
+          Нажмите для сканирования
+        </span>
+      </ion-col>
+    </ion-row>
+    <ion-row class="form-list">
+      <ion-col>
+        <ion-list>
+          <ion-item [ngClass]="{'disabled': !formData.barcode}">
+            <ion-label>
+              <h2>Какой-то текст</h2>
+              <p>Пояснение к этому тексту</p>
+            </ion-label>
+            <ion-checkbox [(ngModel)]="formData.values.value1" color="dark"
+              (ionChange)="checkForm()" item-right>
+            </ion-checkbox>
+          </ion-item>
+          <ion-item [ngClass]="{'disabled': !formData.barcode}">
+            <ion-label>
+              <h2>Какой-то текст</h2>
+              <p>Пояснение к этому тексту</p>
+            </ion-label>
+            <ion-checkbox [(ngModel)]="formData.values.value2" color="dark"
+              (ionChange)="checkForm()" item-right>
+            </ion-checkbox>
+          </ion-item>
+          <ion-item [ngClass]="{'disabled': !formData.barcode}">
+            <ion-label>
+              <h2>Какой-то текст</h2>
+              <p>Пояснение к этому тексту</p>
+            </ion-label>
+            <ion-checkbox [(ngModel)]="formData.values.value3" color="dark"
+              (ionChange)="checkForm()" item-right>
+            </ion-checkbox>
+          </ion-item>
+          <ion-item [ngClass]="{'disabled': !formData.barcode}">
+            <ion-label>
+              <h2>Какой-то текст</h2>
+              <p>Пояснение к этому тексту</p>
+            </ion-label>
+            <ion-select [(ngModel)]="formData.country" (ionChange)="checkForm()">
+              <ion-option value="ru">Россия</ion-option>
+              <ion-option value="kz">Казахстан</ion-option>
+              <ion-option value="ua">Украина</ion-option>
+              <ion-option value="kg">Киргизия</ion-option>
+              <ion-option value="by">Беларусь</ion-option>
+            </ion-select>
+          </ion-item>
+          <ion-item [ngClass]="{'disabled': !formData.barcode}">
+            <ion-label>
+              <h2>Какой-то текст</h2>
+              <p>Пояснение к этому тексту</p>
+            </ion-label>
+            <input class="input" [(ngModel)]="formData.weight"
+              type="number" item-right placeholder="вес, кг"
+              (change)="checkForm()">
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+<ion-footer text-center>
+  <button class="submit" [ngClass]="{'disabled': !canSubmit}" ion-button
+    (click)="sendForm()" [disabled]="!canSubmit">
+    далее
+  </button>
+</ion-footer>

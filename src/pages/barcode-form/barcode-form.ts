@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
-/**
- * Generated class for the BarcodeFormPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { CameraPage } from '../camera/camera';
+
+import { FormProvider } from '../../providers/form/form';
+
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 @IonicPage()
 @Component({
@@ -14,8 +13,56 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'barcode-form.html',
 })
 export class BarcodeFormPage {
+  private formData: any = {
+    barcode: <string> '',
+    values: {
+      value1: <boolean> false,
+      value2: <boolean> false,
+      value3: <boolean> false,
+    },
+    country: <string> null,
+    weight: <number> null
+  };
+  private canSubmit: boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private barcodeScanner: BarcodeScanner,
+    private formProvider: FormProvider
+  ) {}
+
+  private checkForm(): void {
+    this.formProvider.checkValidation(this.formData).then(() => {
+      this.canSubmit = true;
+      console.log('sendForm');
+    }).catch((err: any) => {
+      console.error('sendForm');
+    });
+  }
+
+  private sendForm(): void {
+    this.formProvider.checkValidation(this.formData, true).then(() => {
+      this.navCtrl.push(CameraPage, { formData: this.formData });
+    }).catch((err: any) => {
+      console.error('sendForm');
+    });
+  }
+
+  private startScan(): void {
+    this.barcodeScanner.scan().then((barcodeData: any) => {
+      // Success! Barcode data is here
+      if (!barcodeData.cancelled) {
+        console.log('barcodeScanner 1', barcodeData);
+        this.formData.barcode = barcodeData.text;
+      } else {
+        console.log('barcodeScanner 2', barcodeData);
+        this.formData.barcode = null;
+      }
+    }, (err: any) => {
+      // An error occurred
+      console.log('barcodeScanner', err);
+    });
   }
 
   ionViewDidLoad() {

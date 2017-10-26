@@ -1,0 +1,14 @@
+<ion-content [ngStyle]="{'background-image': 'url(data:image/jpeg;base64,'+ photoTaken +')'}">
+  <div class="camera-box">
+    <img class="borders top-left" src="assets/icon/top-left.png">
+    <img class="borders top-right" src="assets/icon/top-right.png">
+    <img class="borders bottom-left" src="assets/icon/bottom-left.png">
+    <img class="borders bottom-right" src="assets/icon/bottom-right.png">
+  </div>
+</ion-content>
+
+<ion-footer [ngClass]="{'right': photoTaken}">
+  <button ion-button class="take-photo" (click)="takePhoto()">
+    <img [src]="assets/icon/send.png" *ngIf="photoTaken">
+  </button>
+</ion-footer>
