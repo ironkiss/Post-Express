@@ -8,7 +8,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { CameraPreview } from '@ionic-native/camera-preview';
 
-import { MyApp } from './app.component';
+import { PostExpress } from './app.component';
 import { SignInPage } from '../pages/sign-in/sign-in';
 import { BarcodeFormPage } from '../pages/barcode-form/barcode-form';
 import { CameraPage } from '../pages/camera/camera';
@@ -22,7 +22,7 @@ import { FormProvider } from '../providers/form/form';
 
 @NgModule({
   declarations: [
-    MyApp,
+    PostExpress,
     SignInPage,
     BarcodeFormPage,
     CameraPage,
@@ -31,11 +31,11 @@ import { FormProvider } from '../providers/form/form';
   imports: [
     HttpModule,
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(PostExpress)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
+    PostExpress,
     SignInPage,
     BarcodeFormPage,
     CameraPage,

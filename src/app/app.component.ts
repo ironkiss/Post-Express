@@ -9,7 +9,7 @@ import { CameraPage } from '../pages/camera/camera';
 @Component({
   templateUrl: 'app.html'
 })
-export class MyApp {
+export class PostExpress {
   rootPage:any = SignInPage;
 
   constructor(

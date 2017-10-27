@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 
 import { CameraPage } from '../camera/camera';
 
@@ -29,7 +29,8 @@ export class BarcodeFormPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private barcodeScanner: BarcodeScanner,
-    private formProvider: FormProvider
+    private formProvider: FormProvider,
+    private app: App
   ) {}
 
   private checkForm(): void {
@@ -43,7 +44,7 @@ export class BarcodeFormPage {
 
   private sendForm(): void {
     this.formProvider.checkValidation(this.formData, true).then(() => {
-      this.navCtrl.push(CameraPage, { formData: this.formData });
+      this.app.getRootNav().setRoot(CameraPage, { formData: this.formData });
     }).catch((err: any) => {
       console.error('sendForm');
     });

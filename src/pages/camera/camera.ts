@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 
 import { FinishPage } from '../finish/finish';
 
@@ -23,12 +23,16 @@ export class CameraPage {
     alpha: 1
   };
   private photoTaken: string = null;
+  private formData: any = null;
 
   constructor(
+    public app: App,
     public navCtrl: NavController,
     public navParams: NavParams,
     public cameraPreview: CameraPreview
-  ) {}
+  ) {
+    this.formData = this.navParams.get('formData');
+  }
 
   public takePhoto(): void {
     if (!this.photoTaken) {
@@ -38,6 +42,7 @@ export class CameraPage {
         quality: 95
       }
 
+      // this.photoTaken = 'imageData[0]';
       this.cameraPreview.takePicture(pictureOpts).then(imageData => {
         console.log('cameraPreview.takePicture', imageData);
         this.photoTaken = imageData[0];
@@ -46,7 +51,7 @@ export class CameraPage {
       });
     } else {
       document.getElementsByTagName('ion-app')['0'].style.background = '#fff';
-      this.navCtrl.push(FinishPage);
+      this.app.getRootNav().setRoot(FinishPage, { formData: this.formData });
     }
   }
 
@@ -58,6 +63,10 @@ export class CameraPage {
     }).catch((err: any) => {
       console.error('cameraPreview.startCamera', err);
     });
+  }
+
+  ionViewDidEnter() {
+    document.getElementsByTagName('ion-app')['0'].style.background = 'transparent';
   }
 
 }
