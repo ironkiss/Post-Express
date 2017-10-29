@@ -10,7 +10,7 @@ import { CameraPage } from '../pages/camera/camera';
   templateUrl: 'app.html'
 })
 export class PostExpress {
-  rootPage:any = SignInPage;
+  rootPage:any = CameraPage;
 
   constructor(
     platform: Platform,

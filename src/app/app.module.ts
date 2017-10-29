@@ -19,6 +19,7 @@ import { UserProvider } from '../providers/user/user';
 import { ToolsProvider } from '../providers/tools/tools';
 import { AuthProvider } from '../providers/auth/auth';
 import { FormProvider } from '../providers/form/form';
+import { CameraProvider } from '../providers/camera/camera';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,9 @@ import { FormProvider } from '../providers/form/form';
     UserProvider,
     ToolsProvider,
     AuthProvider,
-    FormProvider
+    FormProvider,
+    CameraProvider,
+    CameraProvider
   ]
 })
 export class AppModule {}
