@@ -1,18 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
 
-/*
-  Generated class for the UserProvider provider.
+import { ApiProvider } from '../api/api';
 
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
+import { NativeStorage } from '@ionic-native/native-storage';
+
 @Injectable()
 export class UserProvider {
+  public user: any = {};
 
-  constructor(public http: Http) {
+  constructor(
+    private apiPrvd: ApiProvider,
+    private nativeStorage: NativeStorage
+  ) {
     console.log('Hello UserProvider Provider');
+    this.nativeStorage.getItem('user_data').then((userData: User) => {
+      this.user = userData;
+      this.apiPrvd.authToken = userData.api_token;
+    }).catch((err: any) => console.error('nativeStorage.getItem[user_data]', err));
   }
 
+}
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  api_token: string
 }

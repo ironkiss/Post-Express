@@ -3,10 +3,12 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { CameraPreview } from '@ionic-native/camera-preview';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 import { PostExpress } from './app.component';
 import { SignInPage } from '../pages/sign-in/sign-in';
@@ -47,6 +49,7 @@ import { CameraProvider } from '../providers/camera/camera';
     SplashScreen,
     BarcodeScanner,
     CameraPreview,
+    NativeStorage,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ApiProvider,
     UserProvider,

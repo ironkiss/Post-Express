@@ -2,20 +2,44 @@ import { Injectable } from '@angular/core';
 
 import { ApiProvider } from '../api/api';
 import { ToolsProvider } from '../tools/tools';
+import { UserProvider } from '../user/user';
+
+import { NativeStorage } from '@ionic-native/native-storage';
 
 @Injectable()
 export class AuthProvider {
 
   constructor(
     private toolsPrvd: ToolsProvider,
-    private apiPrvd: ApiProvider
+    private apiPrvd: ApiProvider,
+    private userPrvd: UserProvider,
+    private nativeStorage: NativeStorage
   ) {
     console.log('Hello AuthProvider Provider');
   }
 
+  public isLogged(): Promise<any> {
+    return new Promise((resolve, reject) =>
+      Object.keys(this.userPrvd.user).length > 0 ? resolve() : reject()
+    );
+  }
+
   public signIn(login: string, password: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      resolve();
+      this.apiPrvd.post('login', {
+        email: login,
+        password: password
+      }).subscribe((res: any) => {
+        let user = res.json().user;
+        user.api_token = res.json().api_token;
+        this.nativeStorage.setItem('user_data', user).then(() => {
+          console.log('Stored item [user_data]!');
+          resolve(user);
+        }).catch((err: any) => {
+          console.error('Error storing item [user_data]', err);
+          reject(err);
+        });
+      }, (err: any) => reject(err));
     });
   }
 

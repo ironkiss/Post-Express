@@ -13,6 +13,7 @@
           <ion-item no-lines>
             <ion-input type="text" placeholder="Пункт приёма" name="login"
               [formControl]="signInForm.controls['login']"
+              [(ngModel)]="account.login"
               [ngClass]="{'error-border': signInForm.controls['login'].invalid && formSubmited}"
               required ></ion-input>
           </ion-item>
@@ -20,6 +21,7 @@
           <ion-item no-lines>
             <ion-input type="password" placeholder="Пароль" name="password"
               [formControl]="signInForm.controls['password']"
+              [(ngModel)]="account.password"
               [ngClass]="{'error-border': signInForm.controls['password'].invalid && formSubmited}"
               required></ion-input>
           </ion-item>

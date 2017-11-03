@@ -5,23 +5,35 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { SignInPage } from '../pages/sign-in/sign-in';
 import { CameraPage } from '../pages/camera/camera';
+import { BarcodeFormPage } from '../pages/barcode-form/barcode-form';
+
+import { AuthProvider } from '../providers/auth/auth';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class PostExpress {
-  rootPage:any = CameraPage;
+  rootPage: any = null;
 
   constructor(
     platform: Platform,
-    statusBar: StatusBar,
-    splashScreen: SplashScreen
+    private statusBar: StatusBar,
+    private splashScreen: SplashScreen,
+    private authPrvd: AuthProvider
   ) {
     platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      statusBar.styleDefault();
-      splashScreen.hide();
+      this.authPrvd.isLogged().then(() => {
+        this.rootPage = BarcodeFormPage;
+        this.hideSplash();
+      }).catch(() => {
+        this.rootPage = SignInPage;
+        this.hideSplash();
+      });
     });
+  }
+
+  private hideSplash(): void {
+    this.statusBar.styleDefault();
+    this.splashScreen.hide();
   }
 }

@@ -14,8 +14,8 @@ import { AuthProvider } from '../../providers/auth/auth';
 })
 export class SignInPage {
   public account: any = {
-    login: '',
-    password: ''
+    login: <string> 'test@qq.qq',
+    password: <string> '123123123'
   };
   private signInForm: any;
   private formSubmited: boolean = false;
@@ -56,8 +56,10 @@ export class SignInPage {
         formData.value.login,
         formData.value.password
       ).then(res => {
-        console.log(res);
+        console.log('authPrvd.signIn', res);
         this.navCtrl.setRoot(BarcodeFormPage);
+      }).catch((err: any) => {
+        console.error('authPrvd.signIn', err);
       });
     } else {
       this.authPrvd.showErrors(formData.controls);
