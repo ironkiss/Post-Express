@@ -4,31 +4,30 @@ import { Injectable } from '@angular/core';
 export class CameraProvider {
   private maxHeight: number = null;
 
-  constructor() {
-    console.log('Hello CameraProvider Provider');
-  }
-
   public getCameraSize(sizes: Array<any>): any {
-    let constA = this.cutFloatNumber(this.getDeviceScreenСoefficient());
-    let constB = null;
+    let screenCoff = this.cutFloatNumber(this.getDeviceScreenСoefficient());
     let newSizes = [];
     let result = null;
     for (let item of sizes) {
-    	if (item.width > item.height) {
-    		constB = this.cutFloatNumber(item.width / item.height);
-    		if (constB == constA && item.width < this.maxHeight) newSizes.push({
-    			width: item.height,
+    	if (item.width > item.height && item.width < this.maxHeight) {
+        newSizes.push({
+    			width: item.width / screenCoff,
     			height: item.width
         });
-      } else if (item.width < item.height) {
-    		constB = this.cutFloatNumber(item.height / item.width);
-    		if (constB == constA && item.height < this.maxHeight)
-          newSizes.push(item);
+      } else if (item.width < item.height && item.height < this.maxHeight) {
+        newSizes.push({
+    			width: item.width,
+    			height: item.height / screenCoff
+        });
       }
     }
+
     if (newSizes.length > 0) {
-      result = newSizes[0];
+      result = newSizes.reduce((l, e) => e.width > l.width ? e : l);
+    } else {
+      result = sizes.reduce((l, e) => e.width > l.width ? e : l);
     }
+
     return result;
   }
 
@@ -38,14 +37,15 @@ export class CameraProvider {
     let result = null;
 
     if (width > height) {
-      this.maxHeight = width * 3;
+      this.maxHeight = width * window.devicePixelRatio;
       result = width / height;
     } else if (width < height) {
-      this.maxHeight = height * 3;
+      this.maxHeight = height * window.devicePixelRatio;
       result = height / width;
     } else {
       result = 1;
     }
+
     return result;
   }
 

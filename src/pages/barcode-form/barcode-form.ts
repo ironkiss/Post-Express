@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
+import { IonicPage, App } from 'ionic-angular';
 
 import { CameraPage } from '../camera/camera';
 
@@ -20,54 +20,47 @@ export class BarcodeFormPage {
       value2: <boolean> false,
       value3: <boolean> false,
     },
-    country: <string> null,
+    country: <number> null,
     weight: <number> null
   };
   private canSubmit: boolean = false;
+  private cost: string = '';
 
   constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
     private barcodeScanner: BarcodeScanner,
-    private formProvider: FormProvider,
+    private formPrvd: FormProvider,
     private app: App
   ) {}
 
-  private checkForm(): void {
-    this.formProvider.checkValidation(this.formData).then(() => {
+  public checkForm(type?: string): void {
+    console.log('checkForm', type, this.formData.weight);
+    if (type && (type == 'country' || type == 'weight')) {
+      if (this.formData.country && this.formData.weight)
+      this.formPrvd.getCost({
+        country: this.formData.country,
+        weight: this.formData.weight
+      }).then((res: any) => {
+        console.log('formPrvd.getPrice', res);
+        this.cost = res;
+      }).catch((err: any) => console.error('formPrvd.getPrice', err));
+    }
+
+    this.formPrvd.checkValidation(this.formData).then(() => {
       this.canSubmit = true;
-      console.log('sendForm');
-    }).catch((err: any) => {
-      console.error('sendForm');
-    });
+    }).catch((err: any) => console.error('formPrvd.checkValidation', err));
   }
 
-  private sendForm(): void {
-    this.formProvider.checkValidation(this.formData, true).then(() => {
+  public sendForm(): void {
+    this.formPrvd.checkValidation(this.formData, true).then(() => {
       this.app.getRootNav().setRoot(CameraPage, { formData: this.formData });
-    }).catch((err: any) => {
-      console.error('sendForm');
-    });
+    }).catch((err: any) => console.error('formPrvd.checkValidation', err));
   }
 
-  private startScan(): void {
+  public startScan(): void {
     this.barcodeScanner.scan().then((barcodeData: any) => {
-      // Success! Barcode data is here
-      if (!barcodeData.cancelled) {
-        console.log('barcodeScanner 1', barcodeData);
-        this.formData.barcode = barcodeData.text;
-      } else {
-        console.log('barcodeScanner 2', barcodeData);
-        this.formData.barcode = null;
-      }
-    }, (err: any) => {
-      // An error occurred
-      console.log('barcodeScanner', err);
-    });
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad BarcodeFormPage');
+      this.formData.barcode = barcodeData.cancelled ?
+        null : barcodeData.text;
+    }, (err: any) => console.log('barcodeScanner', err));
   }
 
 }

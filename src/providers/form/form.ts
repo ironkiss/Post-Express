@@ -1,40 +1,69 @@
 import { Injectable } from '@angular/core';
 
 import { ToolsProvider } from '../tools/tools';
+import { ApiProvider } from '../api/api';
+import { AuthProvider } from '../auth/auth';
 
 @Injectable()
 export class FormProvider {
 
-  constructor(private toolsPrvd: ToolsProvider) {
-    console.log('Hello FormProvider Provider');
+  constructor(
+    private toolsPrvd: ToolsProvider,
+    private apiPrvd: ApiProvider,
+    private authPrvd: AuthProvider
+  ) {}
+
+  public getCost(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.apiPrvd.post('calculate', data).subscribe((res: any) => {
+        resolve(res);
+      }, (err: any) => reject());
+    });
+  }
+
+  public sendForm(formData: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.apiPrvd.post('barcode', formData).subscribe((res: any) => {
+        resolve(res);
+      }, (err: any) => {
+        this.errorsAction(err).then(() => reject({ canDoAction: true }))
+          .catch(() => reject());
+      });
+    });
   }
 
   public checkValidation(formData: any, showToast?: boolean): Promise<any> {
     return new Promise((resolve, reject) => {
+      let errorText: string = null;
       if (!formData.barcode) {
-        if (showToast)
-        this.toolsPrvd.showToast('Просканируйте пожалуйста код');
-        reject();
+        errorText = 'Просканируйте пожалуйста код';
       } else if (!formData.values.value1) {
-        if (showToast)
-        this.toolsPrvd.showToast('Введите значение для пункта 1');
-        reject();
+        errorText = 'Введите значение для пункта 1';
       } else if (!formData.values.value2) {
-        if (showToast)
-        this.toolsPrvd.showToast('Введите значение для пункта 2');
-        reject();
+        errorText = 'Введите значение для пункта 2';
       } else if (!formData.values.value3) {
-        if (showToast)
-        this.toolsPrvd.showToast('Введите значение для пункта 3');
-        reject();
+        errorText = 'Введите значение для пункта 3';
       } else if (!formData.country) {
-        if (showToast)
-        this.toolsPrvd.showToast('Выберите страну');
-        reject();
+        errorText = 'Выберите страну';
       } else if (!formData.weight) {
-        if (showToast)
-        this.toolsPrvd.showToast('Введите вес');
+        errorText = 'Введите вес';
+      } else {
+        resolve();
+      }
+
+      if (errorText) {
+        if (showToast) this.toolsPrvd.showToast(errorText);
         reject();
+      }
+    });
+  }
+
+  private errorsAction(err: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (err && (err.status == 401 || err.status == 498)) {
+        this.toolsPrvd.showToast('Время сессии вышло, пожалуйста залогиньтесь еще раз.', 5000);
+        this.authPrvd.logOut();
+        reject()
       } else {
         resolve();
       }

@@ -1,7 +1,7 @@
 page-barcode-form {
   .content {
     .scroll-content {
-      overflow: hidden;
+      // overflow: hidden;
 
       .grid {
         padding: 0;
@@ -58,8 +58,8 @@ page-barcode-form {
 
                   &.checkbox-checked {
                     .checkbox-inner {
-                      width: 26px;
-                      height: 26px;
+                      width: 25px;
+                      height: 25px;
                       border: none;
                       transform: rotate(0);
                       background: #445dc5;

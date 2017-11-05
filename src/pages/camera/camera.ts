@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
+import { IonicPage, NavParams, App } from 'ionic-angular';
 
 import { FinishPage } from '../finish/finish';
 
 import { ToolsProvider } from '../../providers/tools/tools';
 import { CameraProvider } from '../../providers/camera/camera';
+import { FormProvider } from '../../providers/form/form';
 
 import { CameraPreviewOptions, CameraPreview } from '@ionic-native/camera-preview';
 
@@ -29,12 +30,12 @@ export class CameraPage {
   private formData: any = {};
 
   constructor(
-    public app: App,
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    public cameraPreview: CameraPreview,
+    private app: App,
+    private navParams: NavParams,
+    private cameraPreview: CameraPreview,
     private toolsPrvd: ToolsProvider,
-    private cameraPrvd: CameraProvider
+    private cameraPrvd: CameraProvider,
+    private formPrvd: FormProvider
   ) {
     this.formData = this.navParams.get('formData');
   }
@@ -42,46 +43,69 @@ export class CameraPage {
   public takePhoto(): void {
     if (!this.photoTaken) {
       this.cameraPreview.getSupportedPictureSizes().then((sizes: any) => {
-        console.log('getSupportedPictureSizes', sizes);
-        let pictureOpts = this.cameraPrvd.getCameraSize(sizes);
+        let pictureOpts = this.cameraPrvd.getCameraSize(sizes) || {
+          width: sizes[0].width,
+          height: sizes[0].height
+        };
         pictureOpts.quality = 100;
-
-        console.log('pictureOpts', pictureOpts);
 
         this.toolsPrvd.showLoader();
         this.cameraPreview.takePicture(pictureOpts).then((imageData: Array<any>) => {
-          console.log('cameraPreview.takePicture', imageData);
           this.photoTaken = imageData[0];
           setTimeout(() => {
             this.toolsPrvd.hideLoader();
-          }, 1000);
+          }, 500);
         }, err => {
           this.toolsPrvd.hideLoader();
           console.error('cameraPreview.takePicture', err);
         });
-      }).catch((err: any) => {
-
-      });
-
-      // this.photoTaken = 'imageData[0]';
+      }).catch((err: any) => console.error('getSupportedPictureSizes', err));
     } else {
-      document.getElementsByTagName('ion-app')['0'].style.background = '#fff';
-      this.app.getRootNav().setRoot(FinishPage, { formData: this.formData });
+      this.formData.image = this.photoTaken;
+      this.toolsPrvd.showLoader();
+      this.formPrvd.sendForm(this.formData).then((res: any) => {
+        this.toolsPrvd.hideLoader();
+        this.openFinishPage('success', res);
+      }).catch((err: any) => {
+        console.error('formPrvd.sendForm', err);
+        this.toolsPrvd.hideLoader();
+        if (err && err.canDoAction) this.openFinishPage('error', err);
+      });
     }
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad CameraPage');
-    this.cameraPreview.startCamera(this.cameraPreviewOpts).then((res: any) => {
-      console.log('cameraPreview.startCamera', res);
-      document.getElementsByTagName('ion-app')['0'].style.background = 'transparent';
-    }).catch((err: any) => {
-      console.error('cameraPreview.startCamera', err);
+  private openFinishPage(status: string, result: any): void {
+    this.app.getRootNav().setRoot(FinishPage, {
+      formData: this.formData,
+      status: status,
+      result: result
     });
   }
 
+  private changeBackground(bgColor: string): void {
+    try {
+      document.getElementsByTagName('ion-app')['0'].style.background = bgColor;
+    } catch (e) { console.error('changeBackground', e) }
+  }
+
+  /*
+   * Runs when the page has fully entered and is now the active page.
+   * This event will fire, whether it was the first load or a cached page.
+   */
   ionViewDidEnter() {
-    document.getElementsByTagName('ion-app')['0'].style.background = 'transparent';
+    this.cameraPreview.startCamera(this.cameraPreviewOpts).then(() => {
+      this.changeBackground('transparent');
+    }).catch((err: any) => console.error('cameraPreview.startCamera', err));
+  }
+
+  /*
+   * Runs when the page is about to leave and no longer be the active page.
+   */
+  ionViewWillLeave() {
+    this.cameraPreview.stopCamera().then(() => {
+      console.log('Camera successfully stopped!');
+      this.changeBackground('#fff');
+    }).catch((err: any) => console.error('Error with stopping camera', err));
   }
 
 }

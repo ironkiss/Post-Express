@@ -4,7 +4,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { SignInPage } from '../pages/sign-in/sign-in';
-import { CameraPage } from '../pages/camera/camera';
 import { BarcodeFormPage } from '../pages/barcode-form/barcode-form';
 
 import { AuthProvider } from '../providers/auth/auth';

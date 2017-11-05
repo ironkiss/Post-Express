@@ -20,7 +20,7 @@
               <p>Пояснение к этому тексту</p>
             </ion-label>
             <ion-checkbox [(ngModel)]="formData.values.value1" color="dark"
-              (ionChange)="checkForm()" item-right>
+              (ionChange)="checkForm('values.value1')" item-right>
             </ion-checkbox>
           </ion-item>
           <ion-item [ngClass]="{'disabled': !formData.barcode}">
@@ -29,7 +29,7 @@
               <p>Пояснение к этому тексту</p>
             </ion-label>
             <ion-checkbox [(ngModel)]="formData.values.value2" color="dark"
-              (ionChange)="checkForm()" item-right>
+              (ionChange)="checkForm('values.value2')" item-right>
             </ion-checkbox>
           </ion-item>
           <ion-item [ngClass]="{'disabled': !formData.barcode}">
@@ -38,32 +38,34 @@
               <p>Пояснение к этому тексту</p>
             </ion-label>
             <ion-checkbox [(ngModel)]="formData.values.value3" color="dark"
-              (ionChange)="checkForm()" item-right>
+              (ionChange)="checkForm('values.value3')" item-right>
             </ion-checkbox>
           </ion-item>
           <ion-item [ngClass]="{'disabled': !formData.barcode}">
             <ion-label>
-              <h2>Какой-то текст</h2>
-              <p>Пояснение к этому тексту</p>
+              <h2>Страна</h2>
+              <p>Выберите страну из списка</p>
             </ion-label>
-            <ion-select [(ngModel)]="formData.country" (ionChange)="checkForm()">
-              <ion-option value="ru">Россия</ion-option>
-              <ion-option value="kz">Казахстан</ion-option>
-              <ion-option value="ua">Украина</ion-option>
+            <ion-select [(ngModel)]="formData.country"
+              (ionChange)="checkForm('country')">
+              <ion-option value="2">Россия</ion-option>
+              <ion-option value="3">Казахстан</ion-option>
+              <!-- <ion-option value="ua">Украина</ion-option>
               <ion-option value="kg">Киргизия</ion-option>
-              <ion-option value="by">Беларусь</ion-option>
+              <ion-option value="by">Беларусь</ion-option> -->
             </ion-select>
           </ion-item>
           <ion-item [ngClass]="{'disabled': !formData.barcode}">
             <ion-label>
-              <h2>Какой-то текст</h2>
-              <p>Пояснение к этому тексту</p>
+              <h2>Вес</h2>
+              <p>Дробное значение вводить через точку</p>
             </ion-label>
             <input class="input" [(ngModel)]="formData.weight"
               type="number" item-right placeholder="вес, кг"
-              (change)="checkForm()">
+              (change)="checkForm('weight')">
           </ion-item>
         </ion-list>
+        <span ion-text color="default">{{ cost }}</span>
       </ion-col>
     </ion-row>
   </ion-grid>

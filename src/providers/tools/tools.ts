@@ -10,9 +10,7 @@ export class ToolsProvider {
   constructor(
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController
-  ) {
-    console.log('Hello ToolsProvider Provider');
-  }
+  ) {}
 
   public showLoader(content?: string): void {
     if (!content) content = 'Please wait...'

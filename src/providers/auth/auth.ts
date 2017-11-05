@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
 
+import { App } from 'ionic-angular';
+
+import { SignInPage } from '../../pages/sign-in/sign-in';
+
 import { ApiProvider } from '../api/api';
 import { ToolsProvider } from '../tools/tools';
 import { UserProvider } from '../user/user';
@@ -13,27 +17,33 @@ export class AuthProvider {
     private toolsPrvd: ToolsProvider,
     private apiPrvd: ApiProvider,
     private userPrvd: UserProvider,
-    private nativeStorage: NativeStorage
-  ) {
-    console.log('Hello AuthProvider Provider');
+    private nativeStorage: NativeStorage,
+    private app: App
+  ) {}
+
+  public logOut(): void {
+    this.nativeStorage.remove('user_data');
+    this.app.getRootNav().setRoot(SignInPage);
   }
 
   public isLogged(): Promise<any> {
-    return new Promise((resolve, reject) =>
-      Object.keys(this.userPrvd.user).length > 0 ? resolve() : reject()
-    );
+    return new Promise((resolve, reject) => {
+      Object.keys(this.userPrvd.user).length > 0 && this.userPrvd.user.token ?
+        resolve() : reject();
+    });
   }
 
   public signIn(login: string, password: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.apiPrvd.post('login', {
-        email: login,
+        name: login,
         password: password
       }).subscribe((res: any) => {
         let user = res.json().user;
-        user.api_token = res.json().api_token;
+        user.token = res.json().token;
         this.nativeStorage.setItem('user_data', user).then(() => {
-          console.log('Stored item [user_data]!');
+          this.userPrvd.user = user;
+          this.apiPrvd.authToken = user.token;
           resolve(user);
         }).catch((err: any) => {
           console.error('Error storing item [user_data]', err);
@@ -44,23 +54,25 @@ export class AuthProvider {
   }
 
   public showErrors(controls: any): void {
+    let text = null;
     if (controls.login.invalid) {
       if (controls.login.errors.required) {
-        this.toolsPrvd.showToast('Поле "Пункт приёма" обязательное');
+        text = 'Поле "Пункт приёма" обязательное';
       } else if (controls.login.errors.minlength) {
-        this.toolsPrvd.showToast(`Минимальная длина поля "Пункт приёма" должна быть ${controls.login.errors.minlength.requiredLength} символов`);
+        text = `Минимальная длина поля "Пункт приёма" должна быть ${controls.login.errors.minlength.requiredLength} символов`;
       } else if (controls.login.errors.maxlength) {
-        this.toolsPrvd.showToast(`Максимальная длина поля "Пункт приёма" должна быть ${controls.login.errors.maxlength.requiredLength} символов`);
+        text = `Максимальная длина поля "Пункт приёма" должна быть ${controls.login.errors.maxlength.requiredLength} символов`;
       }
     } else if (controls.password.invalid) {
       if (controls.password.errors.required) {
-        this.toolsPrvd.showToast('Поле "Пароль" обязательное');
+        text = 'Поле "Пароль" обязательное';
       } else if (controls.password.errors.minlength) {
-        this.toolsPrvd.showToast(`Минимальная длина поля "Пароль" должна быть ${controls.password.errors.minlength.requiredLength} символов`);
+        text = `Минимальная длина поля "Пароль" должна быть ${controls.password.errors.minlength.requiredLength} символов`;
       } else if (controls.password.errors.maxlength) {
-        this.toolsPrvd.showToast(`Максимальная длина поля "Пароль" должна быть ${controls.password.errors.maxlength.requiredLength} символов`);
+        text = `Максимальная длина поля "Пароль" должна быть ${controls.password.errors.maxlength.requiredLength} символов`;
       }
     }
+    if (text) this.toolsPrvd.showToast(text);
   }
 
 }

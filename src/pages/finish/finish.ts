@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
+import { IonicPage, NavParams, App } from 'ionic-angular';
 
 import { SignInPage } from '../sign-in/sign-in';
 import { BarcodeFormPage } from '../barcode-form/barcode-form';
+
+import { FormProvider } from '../../providers/form/form';
+import { ToolsProvider } from '../../providers/tools/tools';
 
 @IonicPage()
 @Component({
@@ -11,30 +14,42 @@ import { BarcodeFormPage } from '../barcode-form/barcode-form';
 })
 export class FinishPage {
   private status: string = 'success';
-  private formData: any = null;
+  private formData: any = {};
+  private result: any = {};
 
   constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    private app: App
+    private navParams: NavParams,
+    private app: App,
+    private formPrvd: FormProvider,
+    private toolsPrvd: ToolsProvider
   ) {
     this.formData = this.navParams.get('formData');
+    this.result = this.navParams.get('result');
+    this.status = this.navParams.get('status');
   }
 
-  private tryAgain(): void {
-    
+  public tryAgain(): void {
+    this.toolsPrvd.showLoader();
+    this.formPrvd.sendForm(this.formData).then((res: any) => {
+      this.toolsPrvd.hideLoader();
+      this.status = 'success';
+      this.result = res;
+    }).catch((err: any) => {
+      console.error('formPrvd.sendForm', err);
+      this.toolsPrvd.hideLoader();
+      if (err && err.canDoAction) {
+        this.status = 'error';
+        this.result = err.json();
+      }
+    });
   }
 
-  private exit(): void {
+  public exit(): void {
     this.app.getRootNav().setRoot(SignInPage);
   }
 
-  private addNewCode(): void {
+  public addNewCode(): void {
     this.app.getRootNav().setRoot(BarcodeFormPage);
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad FinishPage');
   }
 
 }

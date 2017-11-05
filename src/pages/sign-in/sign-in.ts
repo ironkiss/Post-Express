@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
 
 import { BarcodeFormPage } from '../barcode-form/barcode-form';
 
@@ -14,16 +14,15 @@ import { AuthProvider } from '../../providers/auth/auth';
 })
 export class SignInPage {
   public account: any = {
-    login: <string> 'test@qq.qq',
-    password: <string> '123123123'
+    login: <string> 'test1',
+    password: <string> '123456'
   };
   private signInForm: any;
   private formSubmited: boolean = false;
 
   constructor(
+    public formBuilder: FormBuilder,
     private navCtrl: NavController,
-    private navParams: NavParams,
-    private formBuilder: FormBuilder,
     private toolsPrvd: ToolsProvider,
     private authPrvd: AuthProvider
   ) {
@@ -32,42 +31,38 @@ export class SignInPage {
         null,
         Validators.compose([
           Validators.required,
-          Validators.minLength(5),
-          Validators.maxLength(30),
+          // Validators.minLength(5),
+          // Validators.maxLength(30),
         ])
       ],
 		  'password': [
         null,
         Validators.compose([
           Validators.required,
-          Validators.minLength(6),
-          Validators.maxLength(30),
+          // Validators.minLength(6),
+          // Validators.maxLength(30),
         ])
       ]
 		})
   }
 
   public doSignIn(formData: any): void {
-    console.log('doSignIn', formData);
     this.formSubmited = true;
-
     if (formData.valid) {
+      this.toolsPrvd.showLoader();
       this.authPrvd.signIn(
         formData.value.login,
         formData.value.password
       ).then(res => {
-        console.log('authPrvd.signIn', res);
+        this.toolsPrvd.hideLoader();
         this.navCtrl.setRoot(BarcodeFormPage);
       }).catch((err: any) => {
+        this.toolsPrvd.hideLoader();
         console.error('authPrvd.signIn', err);
       });
     } else {
       this.authPrvd.showErrors(formData.controls);
     }
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SignInPage');
   }
 
 }

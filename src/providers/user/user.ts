@@ -12,10 +12,10 @@ export class UserProvider {
     private apiPrvd: ApiProvider,
     private nativeStorage: NativeStorage
   ) {
-    console.log('Hello UserProvider Provider');
     this.nativeStorage.getItem('user_data').then((userData: User) => {
+      console.log('nativeStorage.getItem[user_data]', userData);
       this.user = userData;
-      this.apiPrvd.authToken = userData.api_token;
+      this.apiPrvd.authToken = userData.token;
     }).catch((err: any) => console.error('nativeStorage.getItem[user_data]', err));
   }
 
@@ -25,5 +25,5 @@ interface User {
   id: number;
   name: string;
   email: string;
-  api_token: string
+  token: string
 }
