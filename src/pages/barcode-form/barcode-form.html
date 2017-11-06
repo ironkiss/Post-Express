@@ -64,8 +64,20 @@
               type="number" item-right placeholder="вес, кг"
               (change)="checkForm('weight')">
           </ion-item>
+          <ion-item *ngIf="!cost.price || cost.price == 'error'" class="no-bg"
+            text-wrap>
+            <span color="default">
+              {{ cost.message }}
+            </span>
+          </ion-item>
+          <ion-item *ngIf="cost.price && cost.price != 'error'" class="no-bg"
+            text-wrap>
+            <span color="default">
+              {{ cost.message }}
+              {{ cost.price }}
+            </span>
+          </ion-item>
         </ion-list>
-        <span ion-text color="default">{{ cost }}</span>
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -16,7 +16,7 @@ export class FormProvider {
   public getCost(data: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.apiPrvd.post('calculate', data).subscribe((res: any) => {
-        resolve(res);
+        resolve(res.json());
       }, (err: any) => reject());
     });
   }

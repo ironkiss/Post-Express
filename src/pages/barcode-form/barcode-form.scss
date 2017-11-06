@@ -30,6 +30,10 @@ page-barcode-form {
                 background-color: #445dc5;
                 margin-bottom: 2px;
 
+                &.no-bg {
+                  background-color: transparent;
+                }
+
                 &.disabled {
                   background-color: #b4bee8;
                   pointer-events: none;

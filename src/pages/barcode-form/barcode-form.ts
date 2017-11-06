@@ -4,6 +4,7 @@ import { IonicPage, App } from 'ionic-angular';
 import { CameraPage } from '../camera/camera';
 
 import { FormProvider } from '../../providers/form/form';
+import { ToolsProvider } from '../../providers/tools/tools';
 
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
@@ -24,25 +25,32 @@ export class BarcodeFormPage {
     weight: <number> null
   };
   private canSubmit: boolean = false;
-  private cost: string = '';
+  private cost: any = {};
 
   constructor(
     private barcodeScanner: BarcodeScanner,
     private formPrvd: FormProvider,
+    private toolsPrvd: ToolsProvider,
     private app: App
   ) {}
 
   public checkForm(type?: string): void {
     console.log('checkForm', type, this.formData.weight);
     if (type && (type == 'country' || type == 'weight')) {
-      if (this.formData.country && this.formData.weight)
-      this.formPrvd.getCost({
-        country: this.formData.country,
-        weight: this.formData.weight
-      }).then((res: any) => {
-        console.log('formPrvd.getPrice', res);
-        this.cost = res;
-      }).catch((err: any) => console.error('formPrvd.getPrice', err));
+      if (this.formData.country && this.formData.weight) {
+        this.toolsPrvd.showLoader();
+        this.formPrvd.getCost({
+          country: this.formData.country,
+          weight: this.formData.weight
+        }).then((res: any) => {
+          console.log('formPrvd.getPrice', res);
+          this.toolsPrvd.hideLoader();
+          this.cost = res;
+        }).catch((err: any) => {
+          console.error('formPrvd.getPrice', err);
+          this.toolsPrvd.hideLoader();
+        });
+      }
     }
 
     this.formPrvd.checkValidation(this.formData).then(() => {
@@ -52,7 +60,11 @@ export class BarcodeFormPage {
 
   public sendForm(): void {
     this.formPrvd.checkValidation(this.formData, true).then(() => {
-      this.app.getRootNav().setRoot(CameraPage, { formData: this.formData });
+      if (this.cost.price === 'error') {
+        this.toolsPrvd.showToast(this.cost.message, 5000);
+      } else {
+        this.app.getRootNav().setRoot(CameraPage, { formData: this.formData });
+      }
     }).catch((err: any) => console.error('formPrvd.checkValidation', err));
   }
 
