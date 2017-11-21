@@ -39,10 +39,10 @@
             </button>
           </ng-container>
         </ion-item>
-        <ion-item no-lines text-center>
+        <ion-item no-lines text-center *ngIf="isAndroid">
           <button class="custom-btn-style" ion-button outline block
             color="light" (click)="exit()">
-            Выход
+            Завершить
           </button>
         </ion-item>
       </ion-list>

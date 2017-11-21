@@ -6,7 +6,8 @@ import { CameraPage } from '../camera/camera';
 import { FormProvider } from '../../providers/form/form';
 import { ToolsProvider } from '../../providers/tools/tools';
 
-import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { BarcodeScanner,
+  BarcodeScannerOptions } from '@ionic-native/barcode-scanner';
 
 @IonicPage()
 @Component({
@@ -69,7 +70,10 @@ export class BarcodeFormPage {
   }
 
   public startScan(): void {
-    this.barcodeScanner.scan().then((barcodeData: any) => {
+    let options: BarcodeScannerOptions = {
+      formats: 'CODE_128'
+    };
+    this.barcodeScanner.scan(options).then((barcodeData: any) => {
       this.formData.barcode = barcodeData.cancelled ?
         null : barcodeData.text;
     }, (err: any) => console.log('barcodeScanner', err));

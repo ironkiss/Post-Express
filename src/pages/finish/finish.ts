@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavParams, App } from 'ionic-angular';
+import { IonicPage, NavParams, App, Platform } from 'ionic-angular';
 
-import { SignInPage } from '../sign-in/sign-in';
 import { BarcodeFormPage } from '../barcode-form/barcode-form';
 
 import { FormProvider } from '../../providers/form/form';
@@ -16,16 +15,19 @@ export class FinishPage {
   private status: string = 'success';
   private formData: any = {};
   private result: any = {};
+  private isAndroid: boolean = false;
 
   constructor(
     private navParams: NavParams,
     private app: App,
     private formPrvd: FormProvider,
-    private toolsPrvd: ToolsProvider
+    private toolsPrvd: ToolsProvider,
+    private platform: Platform
   ) {
     this.formData = this.navParams.get('formData');
     this.result = this.navParams.get('result');
     this.status = this.navParams.get('status');
+    this.isAndroid = this.platform.is('android');
   }
 
   public tryAgain(): void {
@@ -39,13 +41,13 @@ export class FinishPage {
       this.toolsPrvd.hideLoader();
       if (err && err.canDoAction) {
         this.status = 'error';
-        this.result = err.json();
+        this.result = err;
       }
     });
   }
 
   public exit(): void {
-    this.app.getRootNav().setRoot(SignInPage);
+    this.platform.exitApp();
   }
 
   public addNewCode(): void {

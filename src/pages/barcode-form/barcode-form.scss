@@ -17,6 +17,20 @@ page-barcode-form {
               font-size: 20px;
               width: 100%;
               text-align: center;
+              z-index: 100;
+              height: 20px;
+              display: block;
+
+              &.text {
+                font-size: 16px;
+                height: 20px;
+                overflow: auto;
+                margin: auto;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+              }
             }
           }
         }
@@ -66,10 +80,11 @@ page-barcode-form {
                       height: 25px;
                       border: none;
                       transform: rotate(0);
-                      background: #445dc5;
                       top: 3px;
                       left: 3px;
                       border-radius: 6px;
+                      background-image: url('../assets/img/ok.png');
+                      background-size: cover;
                     }
                   }
                 }
@@ -106,7 +121,7 @@ page-barcode-form {
     .submit {
       width: 250px;
       height: 62px;
-      font-size: 36px;
+      font-size: 13px;
       border-radius: 10px;
       margin: 3rem 0.2rem;
       background-color: #445dc5;

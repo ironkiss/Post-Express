@@ -86,6 +86,18 @@ export class CameraPage {
     try {
       document.getElementsByTagName('ion-app')['0'].style.background = bgColor;
     } catch (e) { console.error('changeBackground', e) }
+
+    document.getElementsByTagName('body')['0'].style.display = 'none';
+    setTimeout(() => {
+      document.getElementsByTagName('body')['0'].style.display = 'block';
+    }, 1);
+  }
+
+  /*
+   * Runs when the page is about to enter and become the active page.
+   */
+  ionViewWillEnter() {
+    this.toolsPrvd.showLoader();
   }
 
   /*
@@ -95,7 +107,11 @@ export class CameraPage {
   ionViewDidEnter() {
     this.cameraPreview.startCamera(this.cameraPreviewOpts).then(() => {
       this.changeBackground('transparent');
-    }).catch((err: any) => console.error('cameraPreview.startCamera', err));
+      setTimeout(() => { this.toolsPrvd.hideLoader() }, 500);
+    }).catch((err: any) => {
+      console.error('cameraPreview.startCamera', err);
+      setTimeout(() => { this.toolsPrvd.hideLoader() }, 500);
+    });
   }
 
   /*

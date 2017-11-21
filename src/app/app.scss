@@ -26,5 +26,15 @@
     &.activated {
       color: color($colors, 'default');
     }
+
+    &.link {
+      font-size: 1.4rem;
+    }
   }
+}
+
+.ios .ion-page.show-page ~ .nav-decor {
+  display: none !important;
+  background-color: rgba(0,0,0,0) !important;
+  background: rgba(0,0,0,0) !important;
 }

@@ -61,6 +61,7 @@ export class FormProvider {
   private errorsAction(err: any): Promise<any> {
     return new Promise((resolve, reject) => {
       if (err && (err.status == 401 || err.status == 498)) {
+        console.log('err.status', err.status);
         this.toolsPrvd.showToast('Время сессии вышло, пожалуйста залогиньтесь еще раз.', 5000);
         this.authPrvd.logOut();
         reject()

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { ApiProvider } from '../api/api';
 
-import { NativeStorage } from '@ionic-native/native-storage';
+import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class UserProvider {
@@ -10,9 +10,9 @@ export class UserProvider {
 
   constructor(
     private apiPrvd: ApiProvider,
-    private nativeStorage: NativeStorage
+    private storage: Storage
   ) {
-    this.nativeStorage.getItem('user_data').then((userData: User) => {
+    this.storage.get('user_data').then((userData: User) => {
       console.log('nativeStorage.getItem[user_data]', userData);
       this.user = userData;
       this.apiPrvd.authToken = userData.token;

@@ -13,7 +13,7 @@ export class ToolsProvider {
   ) {}
 
   public showLoader(content?: string): void {
-    if (!content) content = 'Please wait...'
+    if (!content) content = 'Загрузка...';
     this.loader = this.loadingCtrl.create({
       content: content
     });

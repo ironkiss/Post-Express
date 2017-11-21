@@ -6,7 +6,8 @@ import 'rxjs/add/operator/map';
 export class ApiProvider {
   public authToken: string;
   private protocol: string = 'http';
-  private siteDomain: string = '192.168.0.102:3000';
+  private siteDomain: string = 'post-express.eu/api/public/index.php';
+  // private siteDomain: string = '192.168.0.102:3000';
   private url: string = `${this.protocol}://${this.siteDomain}/api/v1`;
 
   constructor(public http: Http) {}
@@ -56,6 +57,7 @@ export class ApiProvider {
     let headers = new Headers();
 
     headers.append('Accept', 'application/json');
+    headers.append('Access-Control-Allow-Origin', '*');
     if (this.authToken)
       headers.append('Authorization', `Bearer ${this.authToken}`);
 

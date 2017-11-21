@@ -7,6 +7,10 @@ import { BarcodeFormPage } from '../barcode-form/barcode-form';
 import { ToolsProvider } from '../../providers/tools/tools';
 import { AuthProvider } from '../../providers/auth/auth';
 
+import {
+  ThemeableBrowser,
+  ThemeableBrowserOptions } from '@ionic-native/themeable-browser';
+
 @IonicPage()
 @Component({
   selector: 'page-sign-in',
@@ -14,14 +18,15 @@ import { AuthProvider } from '../../providers/auth/auth';
 })
 export class SignInPage {
   public account: any = {
-    login: <string> 'test1',
-    password: <string> '123456'
+    login: <string> '',
+    password: <string> ''
   };
   private signInForm: any;
   private formSubmited: boolean = false;
 
   constructor(
     public formBuilder: FormBuilder,
+    private themeableBrowser: ThemeableBrowser,
     private navCtrl: NavController,
     private toolsPrvd: ToolsProvider,
     private authPrvd: AuthProvider
@@ -59,10 +64,35 @@ export class SignInPage {
       }).catch((err: any) => {
         this.toolsPrvd.hideLoader();
         console.error('authPrvd.signIn', err);
+        this.toolsPrvd.showToast('Неверные данные для входа');
       });
     } else {
       this.authPrvd.showErrors(formData.controls);
     }
+  }
+
+  public becomePartner(): void {
+    let url = 'http://post-express.eu/?do=feedback';
+
+    const options: ThemeableBrowserOptions = {
+      toolbar: {
+        height: 50,
+        color: '#3451cbff',
+      },
+      closeButton: {
+        wwwImage: 'assets/icon/close.png',
+        wwwImageDensity: 2,
+        align: 'left',
+      },
+      title: {
+        color: '#ffffffff',
+        staticText: 'Стать партнёром',
+      },
+      backButtonCanClose: true,
+    };
+
+    this.themeableBrowser.create(url, '_blank', options);
+
   }
 
 }

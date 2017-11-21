@@ -8,7 +8,7 @@ import { ApiProvider } from '../api/api';
 import { ToolsProvider } from '../tools/tools';
 import { UserProvider } from '../user/user';
 
-import { NativeStorage } from '@ionic-native/native-storage';
+import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class AuthProvider {
@@ -17,19 +17,24 @@ export class AuthProvider {
     private toolsPrvd: ToolsProvider,
     private apiPrvd: ApiProvider,
     private userPrvd: UserProvider,
-    private nativeStorage: NativeStorage,
+    private storage: Storage,
     private app: App
   ) {}
 
   public logOut(): void {
-    this.nativeStorage.remove('user_data');
+    this.storage.remove('user_data');
     this.app.getRootNav().setRoot(SignInPage);
   }
 
   public isLogged(): Promise<any> {
     return new Promise((resolve, reject) => {
-      Object.keys(this.userPrvd.user).length > 0 && this.userPrvd.user.token ?
-        resolve() : reject();
+      this.storage.get('user_data').then((user: any) => {
+        Object.keys(user).length > 0 && user.token ?
+          resolve() : reject();
+      }).catch((err: any) => {
+        console.error('Error storing item [user_data]', err);
+        reject(err);
+      });
     });
   }
 
@@ -41,7 +46,7 @@ export class AuthProvider {
       }).subscribe((res: any) => {
         let user = res.json().user;
         user.token = res.json().token;
-        this.nativeStorage.setItem('user_data', user).then(() => {
+        this.storage.set('user_data', user).then(() => {
           this.userPrvd.user = user;
           this.apiPrvd.authToken = user.token;
           resolve(user);
