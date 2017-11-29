@@ -1,0 +1,68 @@
+page-sign-in {
+  .content {
+    background-color: color($colors, 'default');
+
+    .logo {
+      height: 33%;
+
+      .col {
+        img {
+          max-width: 9rem;
+          max-height: 9rem;
+        }
+      }
+    }
+
+    .login-form {
+      & > .col {
+        max-width: 25rem;
+
+        .item {
+          background: none;
+          margin: 0;
+          padding: 0;
+
+          &.item-input.ng-invalid:not(.input-has-focus):not(.item-input-has-focus) {
+            .item-inner {
+              border: none;
+              box-shadow: none;
+              border-color: red;
+
+              .input.error-border {
+                border-color: #FF5722;
+              }
+            }
+          }
+
+          &.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus),
+          &.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus),
+          &.item-input.input-has-focus {
+            .item-inner {
+              border: none;
+              box-shadow: none;
+            }
+          }
+
+          .item-inner {
+            padding: 0;
+
+            .input {
+              background-color: #fff;
+              border-radius: 8px;
+              height: 60px;
+              line-height: 31px;
+              font-size: 18px;
+              margin-bottom: 5px;
+              padding-left: 10px;
+              border: 1px solid #fff;
+            }
+
+            .label {
+              margin: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}

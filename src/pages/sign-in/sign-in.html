@@ -1,0 +1,46 @@
+<ion-content>
+  <ion-row class="logo" justify-content-center align-items-center>
+    <ion-col col-6 text-center>
+      <img src="assets/icon/logo.png">
+    </ion-col>
+  </ion-row>
+  <ion-row class="login-form" justify-content-center>
+    <ion-col col-8>
+      <form #submitForm="ngForm" [formGroup]="signInForm"
+        (submit)="doSignIn(signInForm)" novalidate>
+        <ion-list>
+
+          <ion-item no-lines>
+            <ion-input type="text" placeholder="Пункт приёма" name="login"
+              [formControl]="signInForm.controls['login']"
+              [(ngModel)]="account.login"
+              [ngClass]="{'error-border': signInForm.controls['login'].invalid && formSubmited}"
+              required ></ion-input>
+          </ion-item>
+
+          <ion-item no-lines>
+            <ion-input type="password" placeholder="Пароль" name="password"
+              [formControl]="signInForm.controls['password']"
+              [(ngModel)]="account.password"
+              [ngClass]="{'error-border': signInForm.controls['password'].invalid && formSubmited}"
+              required></ion-input>
+          </ion-item>
+
+          <ion-item no-lines text-center>
+            <button class="custom-btn-style" ion-button type="submit" outline block
+              color="light">
+              Войти
+            </button>
+          </ion-item>
+
+          <ion-item no-lines text-center>
+            <button class="custom-btn-style link" ion-button type="button"
+              outline block color="light" clear (click)="becomePartner()">
+              Стать партнёром
+            </button>
+          </ion-item>
+        </ion-list>
+      </form>
+    </ion-col>
+  </ion-row>
+</ion-content>

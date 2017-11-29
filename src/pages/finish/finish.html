@@ -1,0 +1,51 @@
+<ion-content>
+  <ion-row justify-content-center align-items-end>
+    <ion-col class="status-info" col-8 text-center
+      [ngClass]="{'error': status == 'error'}">
+      <ng-container *ngIf="status == 'success'">
+        <img class="checkmark" src="assets/icon/checkmark.png">
+        <br>
+        Данные посылки с номером
+        <br>
+        <strong>{{ formData.barcode }}</strong>
+        <br>
+        успешно загружены в систему.
+      </ng-container>
+      <ng-container *ngIf="status == 'error'">
+        <h1>Ошибка</h1>
+        <br>
+        Данные посылки с номером
+        <br>
+        <strong>{{ formData.barcode }}</strong>
+        <br>
+        небыли загружены в систему
+      </ng-container>
+    </ion-col>
+  </ion-row>
+  <ion-row justify-content-center align-items-start>
+    <ion-col col-8>
+      <ion-list>
+        <ion-item no-lines text-center>
+          <ng-container *ngIf="status == 'error'">
+            <button class="custom-btn-style" ion-button outline block
+              color="light" (click)="tryAgain()">
+              Повторить
+            </button>
+          </ng-container>
+          <ng-container *ngIf="status == 'success'">
+            <button class="custom-btn-style" ion-button outline block
+              color="light" (click)="addNewCode()">
+              Добавить ещё
+            </button>
+          </ng-container>
+        </ion-item>
+        <ion-item no-lines text-center *ngIf="isAndroid">
+          <button class="custom-btn-style" ion-button outline block
+            color="light" (click)="exit()">
+            Завершить
+          </button>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-content>

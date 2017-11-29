@@ -1,0 +1,47 @@
+page-finish {
+  .content {
+    background-color: color($colors, 'default');
+
+    .row {
+      height: 50%;
+
+      & > .col {
+        max-width: 25rem;
+
+        &.status-info {
+          font-size: 16px;
+          line-height: 22px;
+          color: #fff;
+          margin-bottom: 15px;
+
+          &.error {
+            color: #ff0000;
+          }
+
+          .checkmark {
+            width: 86px;
+            margin-bottom: 30px;
+          }
+        }
+
+        .list {
+          margin-top: 10px;
+
+          .item {
+            background: none;
+            margin: 0;
+            padding: 0;
+
+            .item-inner {
+              padding: 0;
+
+              .label {
+                margin: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

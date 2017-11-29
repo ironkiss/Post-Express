@@ -14,3 +14,27 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+.button {
+  &.custom-btn-style {
+    height: 60px;
+    border-radius: 8px;
+    font-size: 2.5rem;
+    text-transform: none;
+    margin: 18px 0 0;
+
+    &.activated {
+      color: color($colors, 'default');
+    }
+
+    &.link {
+      font-size: 1.4rem;
+    }
+  }
+}
+
+.ios .ion-page.show-page ~ .nav-decor {
+  display: none !important;
+  background-color: rgba(0,0,0,0) !important;
+  background: rgba(0,0,0,0) !important;
+}
