@@ -8,6 +8,10 @@
 </ion-content>
 
 <ion-footer>
+  <button ion-button class="cancel-photo" (click)="cancelPhoto()"
+    *ngIf="photoTaken" [ngClass]="{'left': photoTaken}">
+    <img src="assets/icon/send.png">
+  </button>
   <button ion-button class="take-photo" (click)="takePhoto()"
     [ngClass]="{'right': photoTaken}">
     <img src="assets/icon/send.png" *ngIf="photoTaken">

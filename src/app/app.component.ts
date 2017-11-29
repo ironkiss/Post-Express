@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { SignInPage } from '../pages/sign-in/sign-in';
 import { BarcodeFormPage } from '../pages/barcode-form/barcode-form';
+import { CameraPage } from '../pages/camera/camera';
 
 import { AuthProvider } from '../providers/auth/auth';
 

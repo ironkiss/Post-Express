@@ -45,12 +45,13 @@ page-camera {
     text-align: center;
 
     .button {
-      width: 81px;
-      height: 81px;
+      width: 60px;
+      height: 60px;
+      padding: 0.7em;
       background: none;
       border-color: #4c7c9d;
       border-style: solid;
-      border-width: 7px;
+      border-width: 5px;
       border-radius: 50%;
       // -webkit-transition: all 1s ease-out;
       // transition: all 1s ease-out;
@@ -64,7 +65,12 @@ page-camera {
       &.right {
         left: auto;
         right: 31px;
-        background: #fff;
+      }
+
+      &.left {
+        right: auto;
+        left: 31px;
+        transform: rotate(180deg)
       }
     }
   }

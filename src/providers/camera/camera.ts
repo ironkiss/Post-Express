@@ -4,20 +4,24 @@ import { Injectable } from '@angular/core';
 export class CameraProvider {
   private maxHeight: number = null;
 
-  public getCameraSize(sizes: Array<any>): any {
+  public getCameraSize(sizes: any[]): any {
+    // console.log('sizes', sizes);
     let screenCoff = this.cutFloatNumber(this.getDeviceScreenСoefficient());
+    // console.log('screenCoff', screenCoff);
     let newSizes = [];
     let result = null;
     for (let item of sizes) {
     	if (item.width > item.height && item.width < this.maxHeight) {
+        let width = item.width / screenCoff;
         newSizes.push({
-    			width: item.width / screenCoff,
+    			width: parseInt(String(width)),
     			height: item.width
         });
       } else if (item.width < item.height && item.height < this.maxHeight) {
+        let height = item.height / screenCoff;
         newSizes.push({
     			width: item.width,
-    			height: item.height / screenCoff
+    			height: parseInt(String(height))
         });
       }
     }
@@ -27,6 +31,8 @@ export class CameraProvider {
     } else {
       result = sizes.reduce((l, e) => e.width > l.width ? e : l);
     }
+
+    // console.log('result', result);
 
     return result;
   }

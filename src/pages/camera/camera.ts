@@ -26,7 +26,7 @@ export class CameraPage {
     toBack: true,
     alpha: 1
   };
-  private photoTaken: string = null;
+  private photoTaken: string = '';
   private formData: any = {};
 
   constructor(
@@ -40,6 +40,10 @@ export class CameraPage {
     this.formData = this.navParams.get('formData');
   }
 
+  public cancelPhoto(): void {
+    this.photoTaken = null;
+  }
+
   public takePhoto(): void {
     if (!this.photoTaken) {
       this.cameraPreview.getSupportedPictureSizes().then((sizes: any) => {
@@ -50,7 +54,7 @@ export class CameraPage {
         pictureOpts.quality = 100;
 
         this.toolsPrvd.showLoader();
-        this.cameraPreview.takePicture(pictureOpts).then((imageData: Array<any>) => {
+        this.cameraPreview.takePicture(pictureOpts).then((imageData: any[]) => {
           this.photoTaken = imageData[0];
           setTimeout(() => {
             this.toolsPrvd.hideLoader();
@@ -87,10 +91,16 @@ export class CameraPage {
       document.getElementsByTagName('ion-app')['0'].style.background = bgColor;
     } catch (e) { console.error('changeBackground', e) }
 
-    document.getElementsByTagName('body')['0'].style.display = 'none';
-    setTimeout(() => {
-      document.getElementsByTagName('body')['0'].style.display = 'block';
-    }, 1);
+    this.startCamera();
+  }
+
+  private startCamera(): void {
+    this.cameraPreview.startCamera(this.cameraPreviewOpts).then(() => {
+      this.toolsPrvd.hideLoader();
+    }).catch((err: any) => {
+      console.error('cameraPreview.startCamera', err);
+      this.toolsPrvd.hideLoader();
+    });
   }
 
   /*
@@ -98,20 +108,7 @@ export class CameraPage {
    */
   ionViewWillEnter() {
     this.toolsPrvd.showLoader();
-  }
-
-  /*
-   * Runs when the page has fully entered and is now the active page.
-   * This event will fire, whether it was the first load or a cached page.
-   */
-  ionViewDidEnter() {
-    this.cameraPreview.startCamera(this.cameraPreviewOpts).then(() => {
-      this.changeBackground('transparent');
-      setTimeout(() => { this.toolsPrvd.hideLoader() }, 500);
-    }).catch((err: any) => {
-      console.error('cameraPreview.startCamera', err);
-      setTimeout(() => { this.toolsPrvd.hideLoader() }, 500);
-    });
+    this.changeBackground('transparent');
   }
 
   /*
