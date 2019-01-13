@@ -71,7 +71,7 @@ export class BarcodeFormPage {
 
   public startScan(): void {
     let options: BarcodeScannerOptions = {
-      formats: 'CODE_128'
+      formats: 'CODE_39,CODE_93,CODE_128,EAN_8,EAN_13'
     };
     this.barcodeScanner.scan(options).then((barcodeData: any) => {
       this.formData.barcode = barcodeData.cancelled ?
