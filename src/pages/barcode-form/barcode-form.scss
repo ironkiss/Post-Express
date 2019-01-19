@@ -118,17 +118,27 @@ page-barcode-form {
   }
 
   .footer {
-    .submit {
-      width: 250px;
-      height: 62px;
-      font-size: 13px;
-      border-radius: 10px;
-      margin: 3rem 0.2rem;
-      background-color: #445dc5;
+    .footer-barcode {
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
 
-      &.disabled {
-        background-color: #b4bee8;
-        opacity: 1;
+      .submit {
+        width: 250px;
+        height: 62px;
+        font-size: 13px;
+        border-radius: 10px;
+        margin: 20px 4px 20px 20px;
+        background-color: #445dc5;
+
+        &.disabled {
+          background-color: #b4bee8;
+          opacity: 1;
+        }
+      }
+
+      .logout {
+        color: #e13838;
       }
     }
   }

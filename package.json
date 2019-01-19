@@ -28,6 +28,7 @@
     "@ionic-native/status-bar": "4.3.0",
     "@ionic-native/themeable-browser": "^4.4.2",
     "@ionic/storage": "^2.0.1",
+    "cordova-android": "~7.1.4",
     "cordova-ios": "~4.5.0",
     "cordova-plugin-camera-preview": "^0.9.0",
     "cordova-plugin-compat": "^1.2.0",
@@ -40,11 +41,10 @@
     "ionic-angular": "3.7.1",
     "ionic-plugin-keyboard": "^2.2.1",
     "ionicons": "3.0.0",
-    "phonegap-plugin-barcodescanner": "^6.0.8",
+    "phonegap-plugin-barcodescanner": "^8.0.1",
     "rxjs": "5.4.3",
     "sw-toolbox": "3.6.0",
-    "zone.js": "0.8.18",
-    "cordova-android": "~6.3.0"
+    "zone.js": "0.8.18"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.0.0",
@@ -53,17 +53,17 @@
   "description": "An Ionic project",
   "cordova": {
     "plugins": {
-      "phonegap-plugin-barcodescanner": {
-        "CAMERA_USAGE_DESCRIPTION": " "
-      },
       "ionic-plugin-keyboard": {},
       "cordova-plugin-whitelist": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-camera-preview": {},
-      "cordova-plugin-themeablebrowser": {},
-      "cordova-plugin-inappbrowser": {}
+      "cordova-plugin-inappbrowser": {},
+      "phonegap-plugin-barcodescanner": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
+      "cordova-plugin-themeablebrowser": {}
     },
     "platforms": [
       "ios",

@@ -82,9 +82,14 @@
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-footer text-center>
-  <button class="submit" [ngClass]="{'disabled': !canSubmit}" ion-button
-    (click)="sendForm()" [disabled]="!canSubmit">
-    Сфотографировать квитанцию
-  </button>
+<ion-footer>
+  <ion-grid class="footer-barcode">
+    <button class="submit" [ngClass]="{'disabled': !canSubmit}" ion-button
+      (click)="sendForm()" [disabled]="!canSubmit">
+      Сфотографировать квитанцию
+    </button>
+    <button class="logout" ion-button icon-only clear (click)="signOut()">
+      <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+    </button>
+  </ion-grid>
 </ion-footer>
