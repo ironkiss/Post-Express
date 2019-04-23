@@ -38,7 +38,7 @@ export class FormProvider {
         barcode
       }).subscribe((res: any) => {
         resolve(res.json());
-      }, (err: any) => reject());
+      }, (err: any) => reject(err.json()));
     });
   }
 

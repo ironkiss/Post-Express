@@ -83,7 +83,7 @@ export class BarcodeFormPage {
         null : barcodeData.text;
 
       if (barcode) {
-        this.formPrvd.validateBarcode(this.formData.barcode).then(res => {
+        this.formPrvd.validateBarcode(barcode).then(res => {
           console.log('res', res)
           if (res && res.status == 'success') {
             this.formData.barcode = barcode;
@@ -91,6 +91,9 @@ export class BarcodeFormPage {
           }
         }).catch(err => {
           console.error('formPrvd.validateBarcode', err);
+          if (err && err.status == 'error' && err.message) {
+            this.toolsPrvd.showToast(err.message);
+          }
         })
       }
     }, (err: any) => console.log('barcodeScanner', err));
