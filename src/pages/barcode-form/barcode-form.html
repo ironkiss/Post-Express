@@ -43,6 +43,15 @@
           </ion-item>
           <ion-item text-wrap [ngClass]="{'disabled': !formData.barcode}">
             <ion-label>
+              <h2>Вес</h2>
+              <p>Дробное значение вводить через точку</p>
+            </ion-label>
+            <input class="input" [(ngModel)]="formData.weight"
+              type="number" item-right placeholder="вес, кг"
+              (change)="checkForm('weight')">
+          </ion-item>
+          <ion-item text-wrap [ngClass]="{'disabled': !formData.barcode}">
+            <ion-label>
               <h2>Страна</h2>
               <p>Укажите страну-получатель</p>
             </ion-label>
@@ -50,19 +59,10 @@
               (ionChange)="checkForm('country')">
               <ion-option value="2">Россия</ion-option>
               <ion-option value="3">Казахстан</ion-option>
-              <!-- <ion-option value="ua">Украина</ion-option>
-              <ion-option value="kg">Киргизия</ion-option>
+              <ion-option value="9">Украина</ion-option>
+              <!-- <ion-option value="kg">Киргизия</ion-option>
               <ion-option value="by">Беларусь</ion-option> -->
             </ion-select>
-          </ion-item>
-          <ion-item text-wrap [ngClass]="{'disabled': !formData.barcode}">
-            <ion-label>
-              <h2>Вес</h2>
-              <p>Дробное значение вводить через точку</p>
-            </ion-label>
-            <input class="input" [(ngModel)]="formData.weight"
-              type="number" item-right placeholder="вес, кг"
-              (change)="checkForm('weight')">
           </ion-item>
           <ion-item *ngIf="!cost.price || cost.price == 'error'" class="no-bg"
             text-wrap>
@@ -82,9 +82,14 @@
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-footer text-center>
-  <button class="submit" [ngClass]="{'disabled': !canSubmit}" ion-button
-    (click)="sendForm()" [disabled]="!canSubmit">
-    Сфотографировать квитанцию
-  </button>
+<ion-footer>
+  <ion-grid class="footer-barcode">
+    <button class="submit" [ngClass]="{'disabled': !canSubmit}" ion-button
+      (click)="sendForm()" [disabled]="!canSubmit">
+      Сфотографировать квитанцию
+    </button>
+    <button class="logout" ion-button icon-only clear (click)="signOut()">
+      <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+    </button>
+  </ion-grid>
 </ion-footer>

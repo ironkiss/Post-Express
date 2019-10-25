@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, App } from 'ionic-angular';
+import { IonicPage, App, NavController, AlertController } from 'ionic-angular';
 
 import { CameraPage } from '../camera/camera';
+import { SignInPage } from '../sign-in/sign-in';
 
 import { FormProvider } from '../../providers/form/form';
 import { ToolsProvider } from '../../providers/tools/tools';
+import { AuthProvider } from '../../providers/auth/auth';
 
 import { BarcodeScanner,
   BarcodeScannerOptions } from '@ionic-native/barcode-scanner';
@@ -29,10 +31,13 @@ export class BarcodeFormPage {
   private cost: any = {};
 
   constructor(
+    public alertCtrl: AlertController,
     private barcodeScanner: BarcodeScanner,
     private formPrvd: FormProvider,
     private toolsPrvd: ToolsProvider,
-    private app: App
+    private app: App,
+    private authPrvd: AuthProvider,
+    private navCtrl: NavController
   ) {}
 
   public checkForm(type?: string): void {
@@ -71,12 +76,55 @@ export class BarcodeFormPage {
 
   public startScan(): void {
     let options: BarcodeScannerOptions = {
-      formats: 'CODE_128'
+      formats: 'CODE_39,CODE_93,CODE_128,EAN_8,EAN_13'
     };
     this.barcodeScanner.scan(options).then((barcodeData: any) => {
-      this.formData.barcode = barcodeData.cancelled ?
+      const barcode = barcodeData.cancelled ?
         null : barcodeData.text;
+
+      if (barcode) {
+        this.formPrvd.validateBarcode(barcode).then(res => {
+          console.log('res', res)
+          if (res && res.status == 'success') {
+            this.formData.barcode = barcode;
+            this.formData.country = res.country_id;
+          }
+        }).catch(err => {
+          console.error('formPrvd.validateBarcode', err);
+          if (err && err.status == 'error' && err.message) {
+            this.toolsPrvd.showToast(err.message);
+          }
+        })
+      }
     }, (err: any) => console.log('barcodeScanner', err));
+  }
+
+  public signOut(): void {
+    const confirm = this.alertCtrl.create({
+      title: 'Выход',
+      message: 'Вы уверены, что хотите выйти?',
+      buttons: [
+        {
+          text: 'Нет',
+          handler: () => {
+            console.log('Disagree clicked');
+          }
+        },
+        {
+          text: 'Да',
+          handler: () => {
+            this.toolsPrvd.showLoader();
+            this.authPrvd.signOut().then(res => {
+              this.toolsPrvd.hideLoader();
+              this.navCtrl.setRoot(SignInPage);
+            }).catch((err: any) => {
+              this.toolsPrvd.hideLoader();
+            });
+          }
+        }
+      ]
+    });
+    confirm.present();
   }
 
 }

@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Platform } from 'ionic-angular';
 
 @Injectable()
 export class CameraProvider {
   private maxHeight: number = null;
+
+  constructor(private platform: Platform) {}
 
   public getCameraSize(sizes: any[]): any {
     // console.log('sizes', sizes);
@@ -41,6 +44,10 @@ export class CameraProvider {
     let width = document.documentElement.clientWidth;
     let height = document.documentElement.clientHeight;
     let result = null;
+
+    if (this.platform.is('ios')) {
+      width = width * 3
+    }
 
     if (width > height) {
       this.maxHeight = width * window.devicePixelRatio;

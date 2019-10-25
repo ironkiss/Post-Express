@@ -58,6 +58,10 @@ export class AuthProvider {
     });
   }
 
+  public signOut(): Promise<any> {
+    return this.storage.remove('user_data');
+  }
+
   public showErrors(controls: any): void {
     let text = null;
     if (controls.login.invalid) {

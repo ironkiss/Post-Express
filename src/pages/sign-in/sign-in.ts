@@ -18,8 +18,8 @@ import {
 })
 export class SignInPage {
   public account: any = {
-    login: <string> '',
-    password: <string> ''
+    login: <string> '', //'000',
+    password: <string> '', //'test000'
   };
   private signInForm: any;
   private formSubmited: boolean = false;

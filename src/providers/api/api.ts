@@ -7,7 +7,6 @@ export class ApiProvider {
   public authToken: string;
   private protocol: string = 'http';
   private siteDomain: string = 'post-express.eu/api/public/index.php';
-  // private siteDomain: string = '192.168.0.102:3000';
   private url: string = `${this.protocol}://${this.siteDomain}/api/v1`;
 
   constructor(public http: Http) {}

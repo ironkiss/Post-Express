@@ -32,6 +32,16 @@ export class FormProvider {
     });
   }
 
+  public validateBarcode(barcode: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.apiPrvd.post('validate_barcode', {
+        barcode
+      }).subscribe((res: any) => {
+        resolve(res.json());
+      }, (err: any) => reject(err.json()));
+    });
+  }
+
   public checkValidation(formData: any, showToast?: boolean): Promise<any> {
     return new Promise((resolve, reject) => {
       let errorText: string = null;
