@@ -1,0 +1,57 @@
+<ion-content [ngStyle]="{'--background': photoTaken ? '#445dc5' : 'transparent'}">
+  <div class="camera-box"
+    *ngIf="!photoTaken"
+    [ngStyle]="{
+      'width': cameraPreviewOpts.width + 'px',
+      'height': cameraPreviewOpts.height + 'px'
+    }">
+    <img *ngIf="photoTaken" [src]="'data:image/jpeg;base64,' + photoTaken">
+    <img class="borders top-left" src="assets/icon/top-left.png">
+    <img class="borders top-right" src="assets/icon/top-right.png">
+    <img class="borders bottom-left" src="assets/icon/bottom-left.png">
+    <img class="borders bottom-right" src="assets/icon/bottom-right.png">
+  </div>
+  <div *ngIf="!photoTaken" class="camera-outside"></div>
+  <div *ngIf="photoTaken" class="info-list">
+    <div class="info-item">
+      <div><strong>Информация о вашей посылке</strong></div>
+      <span>Проверьте информацию и подтвердите отправку</span>
+    </div>
+    <div class="info-item">
+      <div>Номер: <strong>{{ formData.barcode }}</strong></div>
+      <div>Страна: <strong>{{ getCountryName(formData.country) }}</strong></div>
+      <div>Вес: <strong>{{ formData.weight }}</strong></div>
+    </div>
+    <div class="info-item">
+      <div>Забрать посылку: <strong>{{ pickUpDate }}</strong></div>
+    </div>
+    <div class="info-item">
+      <img *ngIf="photoTaken" [src]="'data:image/jpeg;base64,' + photoTaken">
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <!-- <button ion-button class="cancel-photo" (click)="cancelPhoto()"
+    *ngIf="photoTaken" [ngClass]="{'left': photoTaken}">
+    <img src="assets/icon/send.png">
+  </button> -->
+  <button *ngIf="!photoTaken" ion-button class="take-photo" (click)="takePhoto()">
+    <!-- [ngClass]="{'right': photoTaken}"> -->
+    <!-- <img src="assets/icon/send.png" *ngIf="photoTaken"> -->
+  </button>
+  <ion-toolbar *ngIf="photoTaken" class="footer-camera">
+    <ion-row>
+      <ion-col>
+        <ion-button class="back" (click)="cancelForm()" >
+          Отменить
+        </ion-button>
+      </ion-col>
+      <ion-col >
+        <ion-button class="forward" (click)="goForward()">
+          Отправить
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>

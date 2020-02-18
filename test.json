@@ -1,0 +1,49 @@
+{
+  "pickupDetails": {
+      "billingNumber": "22222222220801",
+      "shipmentCount": 1,
+      "shipmentIdentifiers": [
+          "00222222222222222220"
+      ],
+      "customerReference": "Ref 123456",
+      "pickupDate": {
+          "date": "2020-01-11"
+      },
+      "pickupServices": {
+          "isBulkyGood": false,
+          "hasLabel": false
+      }
+  },
+  "pickupAddress": {
+      "name1": "Shipper Name 1",
+      "nativeAddress": {
+          "streetName": "An der Weide",
+          "houseNumber": "50a",
+          "zip": "28195",
+          "city": "Bremen",
+          "country": {
+              "countryISOCode": "DE",
+              "country": "Deutschland",
+              "state": "Bremen"
+          },
+          "name2": "Shipper Name 2",
+          "dispatchingInformation": "Info Shipper"
+      }
+  },
+  "receiverAddress": {
+      "name1": "Receiver Name 1",
+      "nativeAddress": {
+          "streetName": "Vegesacker Heerstr.",
+          "houseNumber": "111",
+          "zip": "28757",
+          "city": "Bremen",
+          "country": {
+              "countryISOCode": "DE",
+              "country": "Deutschland",
+              "state": "Bremen"
+          },
+          "name2": "Receiver Name 2",
+          "dispatchingInformation": "Info Receiver"
+      }
+  }
+}

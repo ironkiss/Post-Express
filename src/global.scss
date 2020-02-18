@@ -24,3 +24,17 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+body {
+  background: var(--ion-color-default);
+}
+
+.ion-page {
+  background: #fff;
+}
+
+ion-app {
+  max-width: 768px;
+  margin-left: auto;
+  margin-right: auto;
+}

@@ -64,3 +64,40 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+if ((window as any).navigator.userAgent.match(/Android/i)) {
+  const originalFetch = (window as any).fetch;
+  const xhrToResponse = xhr => {
+    const headers = new Headers();
+    xhr.getAllResponseHeaders().trim().split(/[\r\n]+/).forEach(line => {
+      console.log('getAllResponseHeaders', line)
+
+      if (line) {
+        const [name, value] = line.split(': ', 2);
+        headers.append(name, value)
+      }
+    });
+    return new Response(xhr.responseText, {
+      status: xhr.status,
+      statusText: xhr.statusText,
+      headers,
+    });
+  };
+  (window as any).fetch = function (...args) {
+    const [url] = args;
+    if (typeof url === 'string' && url.match(/\.svg$/)) {
+      return new Promise((resolve, reject) => {
+        const req = new XMLHttpRequest();
+        req.open('GET', url, true);
+        req.addEventListener('load', () => {
+          console.log('url', url, req)
+          resolve(xhrToResponse(req));
+        });
+        req.addEventListener('error', reject);
+        req.send();
+      });
+    } else {
+      return originalFetch.apply(window, args);
+    }
+  };
+}

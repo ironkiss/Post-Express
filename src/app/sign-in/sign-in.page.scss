@@ -1,0 +1,90 @@
+ion-content {
+  --background: var(--ion-color-default);
+
+  .logo {
+    height: 33%;
+
+    ion-col {
+      img {
+        max-width: 6rem;
+        max-height: 6rem;
+      }
+    }
+  }
+
+  .login-form {
+    & > ion-col {
+      max-width: 20rem;
+
+      ion-list {
+        background: none;
+      }
+
+      .item {
+        --background: none;
+        margin: 0;
+        padding: 0;
+
+        &.item-input.ng-invalid:not(.input-has-focus):not(.item-input-has-focus) {
+          .item-inner {
+            border: none;
+            box-shadow: none;
+            border-color: red;
+
+            .input.error-border {
+              border-color: #FF5722;
+            }
+          }
+        }
+
+        &.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus),
+        &.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus),
+        &.item-input.input-has-focus {
+          .item-inner {
+            border: none;
+            box-shadow: none;
+          }
+        }
+
+
+        ion-input {
+          background-color: #fff;
+          border-radius: 8px;
+          height: 60px;
+          line-height: 31px;
+          font-size: 18px;
+          margin-bottom: 5px;
+          padding-left: 10px;
+          border: 1px solid #fff;
+          --padding-start: 14px;
+        }
+
+        .label {
+          margin: 0;
+        }
+      }
+    }
+  }
+}
+
+ion-button {
+  &.custom-btn-style {
+    --border-radius: 8px;
+    --color-activated: var(--ion-color-default);
+    height: 60px;
+    font-size: 1.5rem;
+    text-transform: none;
+    margin: 18px 16px 0;
+    letter-spacing: normal;
+
+    &.link {
+      font-size: 1rem;
+    }
+  }
+}
+
+.ios .ion-page.show-page ~ .nav-decor {
+  display: none !important;
+  background-color: rgba(0,0,0,0) !important;
+  background: rgba(0,0,0,0) !important;
+}
