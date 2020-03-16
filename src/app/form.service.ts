@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient }   from '@angular/common/http';
 
 import { ToolsService } from './tools.service';
 import { APIService } from './api.service';
@@ -13,9 +12,18 @@ export class FormService {
   constructor(
     private toolsService: ToolsService,
     private apiService: APIService,
-    private authService: AuthService,
-    private http: HttpClient
+    private authService: AuthService
   ) {}
+
+  getCountryName = (countryId: string) => {
+    const countries = {
+      '2': 'Россия',
+      '3': 'Казахстан',
+      '9': 'Украина',
+    }
+
+    return countries[countryId]
+  }
 
   getCost = (data: any): Promise<any> => new Promise((resolve, reject) => {
     this.apiService.post('calculate', data).subscribe((res: any) => {
@@ -48,12 +56,6 @@ export class FormService {
     let errorText: string = null;
     if (!formData.barcode) {
       errorText = 'Просканируйте пожалуйста код';
-    // } else if (!formData.values.value1) {
-    //   errorText = 'Введите значение для пункта 1';
-    // } else if (!formData.values.value2) {
-    //   errorText = 'Введите значение для пункта 2';
-    // } else if (!formData.values.value3) {
-    //   errorText = 'Введите значение для пункта 3';
     } else if (!formData.country) {
       errorText = 'Выберите страну';
     } else if (!formData.weight) {
@@ -67,8 +69,6 @@ export class FormService {
       reject();
     }
   });
-  
-
 
   formatDHLRequestData = ({ barcode, date, user, receiverAddress }) => {
     const address: any = {}
@@ -159,10 +159,8 @@ export class FormService {
     }, (err: any) => reject(err));
   })
 
-  
-
   sendDHLrequest = (data, receiverAddress) => new Promise((resolve, reject) => {
-    const url = 'https://cig.dhl.de/services/sandbox/rest'
+    const url = 'https://cig.dhl.de/services/production/rest'
     this.apiService.post('pick-up/', data, {
       url,
       headers: {

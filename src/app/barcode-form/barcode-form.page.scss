@@ -1,4 +1,5 @@
 ion-content {
+  --overflow: hidden;
 
   &.ios {
     --keyboard-offset: 0 !important;
@@ -55,6 +56,8 @@ ion-content {
 
           ion-item {
             --background: #445dc5;
+            --border-color: transparent;
+
             margin-bottom: 2px;
 
             &.no-bg {
@@ -75,6 +78,18 @@ ion-content {
                 color: #fff;
                 font-size: 1rem;
               }
+            }
+
+            &.message {
+              span {
+                color: #fff;
+                font-size: 14px;
+              }
+            }
+
+            .weight-input.input {
+              width: 100%;
+              height: 44px;
             }
 
             h2 {
@@ -138,26 +153,71 @@ ion-content {
 
 ion-footer {
   .footer-barcode {
-    .ion-align-self-center {
+
+    ion-col:last-child {
       text-align: right;
     }
 
-    .submit {
-      --background: #445dc5;
+    ion-button {
       --border-radius: 10px;
-      width: 250px;
-      height: 62px;
-      font-size: 12px;
-      margin: 20px 4px;
+      height: 44px;
+      font-size: 16px;
+      margin: 16px 10px;
+      min-width: 130px;
+      text-transform: none;
 
-      &.disabled {
-        --background: #b4bee8;
-        opacity: 1;
+      &.submit {
+        --background: #445dc5;
+      }
+  
+      &.cancel {
+        --background: #e13838;
       }
     }
+  }
+}
 
-    .logout {
-      color: #e13838;
+.action-bar {
+
+  ion-col:last-child {
+    text-align: right;
+  }
+
+  ion-button {
+    --border-radius: 10px;
+    height: 44px;
+    font-size: 15px;
+    margin: 16px;
+    min-width: 130px;
+    text-transform: none;
+
+    &.submit {
+      --background: #445dc5;
+    }
+
+    &.cancel {
+      --background: #e13838;
+    }
+  }
+}
+
+@media screen and (max-width: 350px) {
+  ion-footer {
+    .footer-barcode {
+  
+      ion-button {
+        font-size: 14px;
+        margin-left: 4px;
+        margin-right: 4px;
+  
+      }
+    }
+  }
+
+  .action-bar {
+    ion-button {
+      font-size: 14px;
+      min-width: 110px;
     }
   }
 }

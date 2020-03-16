@@ -4,7 +4,6 @@ import { NavController, AlertController, Platform, LoadingController } from '@io
 
 import { FormService } from '../form.service';
 import { ToolsService } from '../tools.service';
-import { AuthService } from '../auth.service';
 import { UserService } from '../user.service';
 
 import { BarcodeScanner,
@@ -22,24 +21,21 @@ import * as moment from 'moment';
 export class BarcodeFormPage  {
 
   canSubmit: boolean = true;
-  buttonText: string = 'Сфотографировать квитанцию';
   formData: any = {
     barcode: <string> '',
-    values: {
-      value1: <boolean> false,
-      value2: <boolean> false,
-      value3: <boolean> false,
-    },
     country: <number> null,
     weight: <number> null,
     date: null
   };
   cost: any = {};
-  minDate = ''
-  maxDate = ''
+  minDate = null
+  maxDate = null
   pickUp = null
+  fromDate = null
+  availableDates = []
   selectedDate = ''
   userWantPickUp = true
+  pageStep = 0
 
   @ViewChild('weightInput', { static: false }) weightInputRef: ElementRef;
 
@@ -48,7 +44,6 @@ export class BarcodeFormPage  {
     private barcodeScanner: BarcodeScanner,
     private formService: FormService,
     private toolsService: ToolsService,
-    private authService: AuthService,
     private navController: NavController,
     private keyboard: Keyboard,
     private platform: Platform,
@@ -56,48 +51,64 @@ export class BarcodeFormPage  {
     private userService: UserService,
     private loadingController: LoadingController
   ) {
-    this.keyboard.onKeyboardDidShow().subscribe(() => {
-      this.buttonText = 'Продолжить'
-    })
-
     this.keyboard.onKeyboardShow().subscribe(() => {
-      if (this.platform.is('ios')) {
-        const statusBarHeight = window.getComputedStyle(document.documentElement).getPropertyValue('--ion-safe-area-top')
-        const bodyHeight = document.body.offsetHeight
-        const contentHeoght = document.getElementsByTagName('ion-content')[0].offsetHeight
-        const footerHeight = document.getElementsByTagName('ion-footer')[0].offsetHeight
+      // if (this.platform.is('ios')) {
+      //   const statusBarHeight = window.getComputedStyle(document.documentElement).getPropertyValue('--ion-safe-area-top')
+      //   const bodyHeight = document.body.offsetHeight
+      //   const contentHeoght = document.getElementsByTagName('ion-content')[0].offsetHeight
+      //   const footerHeight = document.getElementsByTagName('ion-footer')[0].offsetHeight
 
-        const footerPadding = bodyHeight - contentHeoght + footerHeight - parseInt(statusBarHeight)
-        document.getElementsByTagName('ion-footer')[0].style.paddingBottom = `${footerPadding}px`
-      }
+      //   const footerPadding = bodyHeight - contentHeoght + footerHeight - parseInt(statusBarHeight)
+      //   document.getElementsByTagName('ion-footer')[0].style.paddingBottom = `${footerPadding}px`
+      // }
     })
 
     this.keyboard.onKeyboardWillHide().subscribe(() => {
-      if (this.platform.is('ios')) {
-        document.getElementsByTagName('ion-footer')[0].style.paddingBottom = '0px'
-      }
+      // if (this.platform.is('ios')) {
+      //   document.getElementsByTagName('ion-footer')[0].style.paddingBottom = '0px'
+      // }
     })
 
-    this.keyboard.onKeyboardDidHide().subscribe(() => {
-      this.buttonText = 'Сфотографировать квитанцию'
-    })
+    this.formatDates()
+  }
 
-    this.minDate = moment().add(1, 'days').format('YYYY-MM-DD')
-
-    if (moment(this.minDate).day() === 6) {
-      this.minDate = moment().add(3, 'days').format('YYYY-MM-DD')
-    }
-
+  formatDates = () => {
     if (moment(this.minDate).day() === 0) {
       this.minDate = moment().add(2, 'days').format('YYYY-MM-DD')
+    } else if (moment(this.minDate).day() === 6) {
+      this.minDate = moment().add(3, 'days').format('YYYY-MM-DD')
+    } else {
+      this.minDate = moment().add(1, 'days').format('YYYY-MM-DD')
     }
 
     this.maxDate = moment().add(90, 'days').format('YYYY-MM-DD')
-    // this.selectedDate = this.minDate
 
-    // this.formData.barcode = 'CJ026058802RU'
-    // this.formData.country = '2'
-    // this.getPickUpDetails(this.formData.country)
+    const a = moment(this.minDate);
+    const b = moment(this.maxDate);
+
+    const availableDates = []
+
+    // If you want an exclusive end date (half-open interval)
+    for (const m = moment(a); m.diff(b, 'days') <= 0; m.add(1, 'days')) {
+      if (m.day() !== 0 && m.day() !== 6) {
+        const date = m.format('YYYY-MM-DD')
+        
+        availableDates.push(new Date(date))
+      }
+    }
+    
+    this.fromDate = new Date(moment(this.minDate).format('YYYY-MM') + '-01')
+    this.minDate = new Date(this.minDate)
+    this.maxDate = new Date(this.maxDate)
+
+    setTimeout(() => {
+      this.availableDates = [...availableDates]
+    })
+  }
+
+  setBarcode = (barcode: string) => {
+    this.formData.barcode = barcode
+    this.pageStep = 1
   }
 
   getPickUpDetails = async (countryId: string) => {
@@ -111,9 +122,11 @@ export class BarcodeFormPage  {
         '9': 'UA',
       }
 
+      
       if (pickup) {
         pickup.split('||').forEach(item => {
           item = item.split('|')
+          console.log('countryId', countryId, item[0], countries[countryId])
           if (item[0] === countries[countryId]) {
             this.pickUp = Number(item[1])
             return
@@ -158,18 +171,27 @@ export class BarcodeFormPage  {
   sendForm = async (eventType?: string) => {
     console.log('sendForm')
 
-    // TODO: fix ios
-    if (eventType === 'blur') { // && !this.platform.is('ios')) {
-      return
+    if (this.pageStep === 1 || this.pageStep === 2) {
+      console.log('this.formData.weight && this.pickUp && !this.selectedDate && this.userWantPickUp',
+      this.formData.weight, this.pickUp, !this.selectedDate, this.userWantPickUp)
+      if (!this.formData.weight) {
+        this.toolsService.showToast('Введите вес')
+        return
+      } else if (this.formData.weight && this.pickUp && !this.selectedDate && this.userWantPickUp && this.pageStep === 1) {
+        this.pageStep = 2
+        this.selectedDate = moment(new Date(this.minDate)).format('YYYY-MM-DD')
+        // this.openCalendar()
+        return
+      }
     }
 
     // this.selectedDate = this.checkDate(new Date(this.selectedDate))
 
-    if (this.pickUp && !this.selectedDate && this.userWantPickUp) {
-      this.openCalendar()
-      // this.toolsService.showToast('Выберите дату для заказа курьера')
-      return
-    }
+    // if (this.pickUp && !this.selectedDate && this.userWantPickUp) {
+    //   this.openCalendar()
+    //   // this.toolsService.showToast('Выберите дату для заказа курьера')
+    //   return
+    // }
 
     const loader = await this.loadingController.create({
       message: 'Загрузка...'
@@ -191,7 +213,8 @@ export class BarcodeFormPage  {
         this.navController.navigateRoot('/camera', {
           queryParams: {
             formData: this.formData,
-            pickUpData
+            pickUpData,
+            cost: this.cost,
           }
         });
       }
@@ -205,22 +228,22 @@ export class BarcodeFormPage  {
   }
 
   public startScan(): void {
-    let options: BarcodeScannerOptions = {
-      formats: 'CODE_39,CODE_93,CODE_128,EAN_8,EAN_13'
-    };
-    // this.toolsService.showLoader()
+    const options = this.toolsService.getCodeOptions()
     this.barcodeScanner.scan(options).then((barcodeData: any) => {
       const barcode = barcodeData.cancelled ?
         null : barcodeData.text;
 
       if (barcode) {
+        this.setBarcode(barcode)
+        this.toolsService.showLoader()
         this.formService.validateBarcode(barcode).then(res => {
           console.log('res', res)
           if (res && res.status == 'success') {
-            this.formData.barcode = barcode;
             this.formData.country = res.country_id;
             this.getPickUpDetails(res.country_id)
-            this.weightInputRef.nativeElement.focus()
+            setTimeout(() => {
+              this.weightInputRef.nativeElement.focus()
+            }, 2000)
           }
           this.toolsService.hideLoader()
         }).catch(({ error }) => {
@@ -229,14 +252,19 @@ export class BarcodeFormPage  {
             this.toolsService.showToast(error.message);
           }
           this.toolsService.hideLoader()
+          this.onCancel()
         })
       } else {
         this.toolsService.hideLoader()
+        this.onCancel()
+        // this.setBarcode('CJ026058802RU')
+        // this.formData.country = '2'
+        // this.getPickUpDetails(this.formData.country)
       }
     }, (error: any) => {
       console.log('barcodeScanner', error)
       if (error === 'cordova_not_available') {
-        this.formData.barcode = 'CJ026058802RU'
+        this.setBarcode('CJ026058802RU')
         this.formData.country = '2'
         this.getPickUpDetails(this.formData.country)
       }
@@ -244,58 +272,55 @@ export class BarcodeFormPage  {
     });
   }
 
-  openCalendar = () => {
-    this.datePicker.show({
-      date: this.minDate,
-      minDate: new Date(),
-      maxDate: this.maxDate,
-      titleText: 'Выберите дату для заказа курьера',
-      okText: 'Выбрать',
-      doneButtonLabel: 'Выбрать',
-      cancelText: 'Не забирать',
-      cancelButtonLabel: 'Не забирать',
-      allowOldDates: false,
-      mode: 'date',
-      androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_DARK
-    }).then(date => {
-      this.selectedDate = this.checkDate(date)
-      this.userWantPickUp = true
-      if (this.selectedDate) {
-        this.sendForm()
-      }
-      console.log('Got date: ', this.selectedDate)
-    }).catch(error => {
-      console.log('Error occurred while getting date: ', error)
-      if (error === 'cancel') {
-        this.userWantPickUp = false
-      }
-    });
+  // openCalendar = () => {
+  //   this.toolsService.showLoader()
+  //   this.datePicker.show({
+  //     date: this.minDate,
+  //     minDate: this.minDate,
+  //     maxDate: this.maxDate,
+  //     titleText: 'Выберите дату для заказа курьера',
+  //     okText: 'Выбрать',
+  //     doneButtonLabel: 'Выбрать',
+  //     cancelText: 'Не забирать',
+  //     cancelButtonLabel: 'Не забирать',
+  //     allowOldDates: false,
+  //     mode: 'date',
+  //     androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_DARK
+  //   }).then(date => {
+  //     this.selectedDate = this.checkDate(date)
+  //     this.userWantPickUp = true
+  //     // if (this.selectedDate) {
+  //     setTimeout(() => {
+  //       this.sendForm()
+  //       this.toolsService.hideLoader()
+  //     }, 3000)
+  //     // }
+  //     console.log('Got date: ', this.selectedDate)
+  //   }).catch(error => {
+  //     console.log('Error occurred while getting date: ', error)
+  //     if (error === 'cancel') {
+  //       this.userWantPickUp = false
+  //       this.sendForm()
+  //     }
+  //     setTimeout(() => {
+  //       this.toolsService.hideLoader()
+  //     }, 1000)
+  //   });
+  // }
+
+  onSelectDate = (date) => {
+    this.selectedDate = this.checkDate(date)
+    console.log('selectedDate', this.selectedDate)
+    this.userWantPickUp = true
   }
 
-  signOut = async () => {
-    const confirm = await this.alertController.create({
-      header: 'Выход',
-      message: 'Вы уверены, что хотите выйти?',
-      buttons: [
-        {
-          text: 'Нет',
-          handler: () => {
-            console.log('Disagree clicked');
-          }
-        },
-        {
-          text: 'Да',
-          handler: () => {
-            this.authService.signOut().then(res => {
-              this.navController.navigateRoot('/sign-in');
-            }).catch((err: any) => {
+  onCancelCalendar = () => {
+    this.userWantPickUp = false
+    this.sendForm()
+  }
 
-            });
-          }
-        }
-      ]
-    });
-    confirm.present();
+  onCancel = () => {
+    this.navController.navigateRoot('/start');
   }
 
   private formatAndSendFormData() {

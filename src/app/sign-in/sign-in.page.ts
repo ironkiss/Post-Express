@@ -7,10 +7,6 @@ import { Router } from '@angular/router';
 import { ToolsService } from '../tools.service';
 import { AuthService } from '../auth.service';
 
-import {
-  ThemeableBrowser,
-  ThemeableBrowserOptions } from '@ionic-native/themeable-browser/ngx';
-
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.page.html',
@@ -26,7 +22,6 @@ export class SignInPage {
 
   constructor(
     public formBuilder: FormBuilder,
-    private themeableBrowser: ThemeableBrowser,
     private toolsService: ToolsService,
     private authService: AuthService,
     private router: Router
@@ -63,7 +58,7 @@ export class SignInPage {
         formData.value.password
       ).then(() => {
         this.toolsService.hideLoader();
-        this.router.navigate(['/barcode-form'], { replaceUrl: true });
+        this.router.navigate(['/start'], { replaceUrl: true });
       }).catch((err: any) => {
         this.toolsService.hideLoader();
         console.error('authPrvd.signIn', err);
@@ -76,26 +71,7 @@ export class SignInPage {
 
   becomePartner = () => {
     const url = 'http://post-express.eu/?do=feedback';
-
-    const options: ThemeableBrowserOptions = {
-      toolbar: {
-        height: 50,
-        color: '#3451cbff',
-      },
-      closeButton: {
-        wwwImage: 'assets/icon/close.png',
-        wwwImageDensity: 2,
-        align: 'left',
-      },
-      title: {
-        color: '#ffffffff',
-        staticText: 'Стать партнёром',
-      },
-      backButtonCanClose: true,
-    };
-
-    this.themeableBrowser.create(url, '_blank', options);
-
+    this.toolsService.openBrowser(url)
   }
 
 }

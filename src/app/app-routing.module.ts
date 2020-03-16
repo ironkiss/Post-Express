@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: 'camera', loadChildren: './camera/camera.module#CameraPageModule' },
   { path: 'finish', loadChildren: './finish/finish.module#FinishPageModule' },
   { path: 'sign-in', loadChildren: './sign-in/sign-in.module#SignInPageModule' },
+  { path: 'start', loadChildren: './start/start.module#StartPageModule' },
 ];
 
 @NgModule({

@@ -1,6 +1,6 @@
-<ion-content>
+<ion-content [forceOverscroll]="false">
   <ion-grid class="ion-align-items-stretch">
-    <ion-row class="barcode">
+    <!-- <ion-row class="barcode">
       <ion-col (click)="startScan()">
         <img [src]="formData.barcode ? 'assets/img/barcode-success.png' : 'assets/img/barcode-start.png'">
         <span *ngIf="formData.barcode" class="code">
@@ -10,61 +10,60 @@
           Нажмите для сканирования штрих-кода
         </span>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
     <ion-row class="form-list">
       <ion-col>
         <ion-list>
-          <ion-item [ngClass]="{'disabled': !formData.barcode}" class="ion-hide">
+          <ion-item *ngIf="formData.barcode">
             <ion-label class="ion-text-wrap">
-              <h2>Данные отправителя</h2>
-              <p>Проверьте контактные данные, E-Mail и номер телефона</p>
+              <h2>ШПИ-код</h2>
+              <p>{{ formData.barcode }} - {{ formService.getCountryName(formData.country) }}</p>
             </ion-label>
-            <ion-checkbox [(ngModel)]="formData.values.value1" color="dark"
-              (ionChange)="checkForm('values.value1')" item-right>
-            </ion-checkbox>
           </ion-item>
-          <ion-item [ngClass]="{'disabled': !formData.barcode}" class="ion-hide">
-            <ion-label class="ion-text-wrap">
-              <h2>Данные получателя</h2>
-              <p>Убедитесь, что адрес указан полностью, включая индекс и сотовый номер</p>
-            </ion-label>
-            <ion-checkbox [(ngModel)]="formData.values.value2" color="dark"
-              (ionChange)="checkForm('values.value2')" item-right>
-            </ion-checkbox>
-          </ion-item>
-          <ion-item [ngClass]="{'disabled': !formData.barcode}" class="ion-hide">
-            <ion-label class="ion-text-wrap">
-              <h2>Посылка</h2>
-              <p>Соответстувует ли коробка необходимым требованиям</p>
-            </ion-label>
-            <ion-checkbox [(ngModel)]="formData.values.value3" color="dark"
-              (ionChange)="checkForm('values.value3')" item-right>
-            </ion-checkbox>
-          </ion-item>
-          <ion-item [ngClass]="{'disabled': !formData.barcode}">
+          <ion-item *ngIf="formData.barcode && pageStep === 1">
             <ion-label class="ion-text-wrap">
               <h2>Вес</h2>
               <p>Дробное значение вводить через точку</p>
             </ion-label>
-            <input #weightInput class="input" [(ngModel)]="formData.weight"
-              type="number" item-right placeholder="вес, кг"
-              pattern="\d*"
+          </ion-item>
+          <ion-item *ngIf="formData.barcode && pageStep === 1"
+            [ngStyle]="{'padding-right': platform.is('ios') ? '10px' : null}">
+            <input
+              #weightInput
+              id="weightInput"
+              class="weight-input input"
+              [(ngModel)]="formData.weight"
+              type="text"
+              pattern="[0-9]*"
+              decimal="true"
+              button-char=","
+              placeholder="вес, кг"
               (keyup)="checkForm('weight')"
-              (blur)="sendForm('blur')">
+              minlength="0"
+              maxlength="100"
+              item-right
+            >
           </ion-item>
-          <ion-item [ngClass]="{'disabled': !formData.barcode}" class="ion-hide">
+          <ion-item *ngIf="formData.barcode && pageStep === 2" class="pickup-item">
             <ion-label class="ion-text-wrap">
-              <h2>Страна</h2>
-              <p>Укажите страну-получатель</p>
+              <h2>Дата для заказа курьера</h2>
             </ion-label>
-            <ion-select [(ngModel)]="formData.country"
-              (ionChange)="checkForm('country')" disabled="true">
-              <ion-select-option value="2">Россия</ion-select-option>
-              <ion-select-option value="3">Казахстан</ion-select-option>
-              <ion-select-option value="9">Украина</ion-select-option>
-            </ion-select>
           </ion-item>
-          <ion-item *ngIf="pickUp" class="pickup-item">
+          <ion-item *ngIf="formData.barcode && pageStep === 2">
+          <!-- <ion-item> -->
+            <ionic-calendar-date-picker
+              [ngStyle]="{'width': platform.is('ios') ? 'calc(100% - 10px)' : '100%'}"
+              (onSelect)="onSelectDate($event)"
+              [date]="minDate"
+              [fromDate]="fromDate"
+              [toDate]="maxDate"
+              [validDates]="availableDates"
+              [todaysItemStyle]="{'color': '#fff'}"
+              [dayLabels]="['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']"
+              [monthLabels]="['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']"
+            ></ionic-calendar-date-picker>	
+          </ion-item>
+          <!-- <ion-item  class="pickup-item">
             <ng-container *ngIf="platform.is('ios')">
               <ion-label class="ion-text-wrap" (click)="openCalendar()">
                 <h2>Дата для заказа курьера</h2>
@@ -76,57 +75,55 @@
               </ion-label>
             </ng-container>
             <ion-note class="selected-date" slot="end">{{ selectedDate }}</ion-note>
-            <!-- <ion-datetime
-              displayFormat="DD/MM/YY"
-              [(ngModel)]="formData.date"
-              [min]="minDate"
-              [max]="maxDate"
-            ></ion-datetime> -->
-          </ion-item>
-          <ion-item *ngIf="!cost.price || cost.price == 'error'" class="no-bg ion-text-wrap ion-hide">
-            <span color="default">
-              {{ cost.message }}
-            </span>
-          </ion-item>
-          <ion-item *ngIf="cost.price && cost.price != 'error'" class="no-bg ion-text-wrap ion-hide">
-            <span color="default">
-              {{ cost.message }}
-              {{ cost.price }}
-            </span>
-          </ion-item>
+          </ion-item> -->
+          <ng-container *ngIf="formData.barcode && pageStep === 1">
+            <ion-item *ngIf="!cost.price || cost.price == 'error'" class="message no-bg ion-text-wrap">
+              <span>
+                {{ cost.message }}
+              </span>
+            </ion-item>
+            <ion-item *ngIf="cost.price && cost.price != 'error'" class="message no-bg ion-text-wrap">
+              <span>
+                {{ cost.message }}
+                {{ cost.price }}
+              </span>
+            </ion-item>
+          </ng-container>
+          <ion-row *ngIf="platform.is('ios')" class="action-bar">
+            <ion-col>
+              <ion-button *ngIf="formData.barcode && pageStep === 1" class="cancel" (click)="onCancel()">
+                Отменить
+              </ion-button>
+              <ion-button *ngIf="formData.barcode && pageStep === 2" class="cancel" (click)="onCancelCalendar()">
+                Не забирать
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button fill="outline" color="light" *ngIf="formData.barcode && pageStep > 0" class="submit" (click)="sendForm()">
+                Продолжить
+              </ion-button>
+            </ion-col>
+          </ion-row>
         </ion-list>
       </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-footer>
+<ion-footer *ngIf="platform.is('android')">
   <ion-toolbar class="footer-barcode">
     <ion-row>
       <ion-col>
-        <ng-container *ngIf="platform.is('ios')">
-          <ion-button class="submit" [ngClass]="{'disabled': !canSubmit}"
-            (click)="sendForm()" [disabled]="!canSubmit">
-            {{ buttonText }}
-          </ion-button>
-        </ng-container>
-        <ng-container *ngIf="!platform.is('ios')">
-          <ion-button class="submit" [ngClass]="{'disabled': !canSubmit}"
-            (click)="sendForm()" [disabled]="!canSubmit">
-            {{ buttonText }}
-          </ion-button>
-        </ng-container>
+        <ion-button *ngIf="formData.barcode && pageStep === 1" class="cancel" (click)="onCancel()">
+          Отменить
+        </ion-button>
+        <ion-button *ngIf="formData.barcode && pageStep === 2" class="cancel" (click)="onCancelCalendar()">
+          Не забирать
+        </ion-button>
       </ion-col>
-      <ion-col class="ion-align-self-center" >
-        <ng-container *ngIf="platform.is('ios')">
-          <ion-button class="logout" fill="clear" (click)="signOut()">
-            <ion-icon slot="icon-only" ios="ios-log-out" md="md-log-out"></ion-icon>
-          </ion-button>
-        </ng-container>
-        <ng-container *ngIf="!platform.is('ios')">
-          <ion-button class="logout" fill="clear" (click)="signOut()">
-            <ion-icon slot="icon-only" ios="ios-log-out" md="md-log-out"></ion-icon>
-          </ion-button>
-        </ng-container>
+      <ion-col>
+        <ion-button *ngIf="formData.barcode && pageStep > 0" class="submit" (click)="sendForm()">
+          Продолжить
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-toolbar>

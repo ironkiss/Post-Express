@@ -1,0 +1,34 @@
+<ion-content>
+  <ion-row class="ion-align-items-stretch">
+    <ion-col size="12" class="logo">
+      <img [src]="logoSrc">
+    </ion-col>
+    <ion-col size="12">
+      <div  class="info-list">
+        <div class="info-item">
+          <!-- <div><strong>Добро пожаловать.</strong></div> -->
+          <div>{{ signatureText }}</div>
+        </div>
+        <!-- <div class="info-item">
+          <div *ngIf="loginData.name">Пункт приёма: <strong>{{ loginData.name }}</strong></div>
+          <div *ngIf="loginData.fullname">Название: <strong>{{ loginData.fullname }}</strong></div>
+          <div *ngIf="loginData.address">Адрес: <strong>{{ loginData.address }}</strong></div>
+        </div>
+        <div *ngIf="loginData.phoneNumber" class="info-item">
+          <div>Телефон: <strong>{{ loginData.phoneNumber }}</strong></div>
+        </div> -->
+        <div class="info-item">
+          <ion-button class="start" fill="outline" color="light" (click)="startScaner()">Начать работу</ion-button>
+        </div>
+        <div class="info-item">
+          <ion-button fill="outline" color="light" (click)="tracking()">Отследить посылку</ion-button>
+          <br>
+          <ion-button fill="outline" color="light" (click)="leaveFeedback()">Расходный материал</ion-button>
+        </div>
+        <div class="info-item">
+          <ion-button class="exit" fill="outline" color="light" (click)="signOut()">Выход из системы</ion-button>
+        </div>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-content>

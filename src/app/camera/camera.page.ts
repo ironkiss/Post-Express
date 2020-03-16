@@ -9,6 +9,8 @@ import { FormService } from '../form.service';
 import { CameraPreviewOptions, CameraPreview } from '@ionic-native/camera-preview/ngx';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-camera',
   templateUrl: './camera.page.html',
@@ -35,6 +37,8 @@ export class CameraPage {
   formData: any = {};
   pickUpData: any = null;
   pickUpDate: string = null;
+  cost: any = {};
+  approved: boolean = false
 
   constructor(
     private navController: NavController,
@@ -49,14 +53,19 @@ export class CameraPage {
       if (params) {
         this.formData = params.formData || {};
         this.pickUpData = params.pickUpData || null;
+        this.cost = params.cost || {};
 
         console.log('this.pickUpData', this.pickUpData)
 
-        this.pickUpDate = this.pickUpData
+        const pickUpDate = this.pickUpData
           && this.pickUpData.formData
           && this.pickUpData.formData.pickupDetails
           && this.pickUpData.formData.pickupDetails.pickupDate
           && this.pickUpData.formData.pickupDetails.pickupDate.date
+
+        if (pickUpDate) {
+          this.pickUpDate = moment(pickUpDate).format('DD.MM.YYYY')
+        }
       }
     });
   }
@@ -66,13 +75,13 @@ export class CameraPage {
   }
 
   takePhoto = () => {
+    
     if (!this.photoTaken) {
       this.toolsService.showLoader();
       console.log('pictureOpts', this.pictureOpts)
       this.cameraPreview.takeSnapshot(this.pictureOpts).then((imageData: any[]) => {
         console.log('imageData', imageData)
         this.photoTaken = imageData[0];
-        this.stopCamera()
         setTimeout(() => {
           this.toolsService.hideLoader();
         }, 500);
@@ -88,18 +97,17 @@ export class CameraPage {
     }
   }
 
-  getCountryName = (countryId: string) => {
-    const countries = {
-      '2': 'Россия',
-      '3': 'Казахстан',
-      '9': 'Украина',
-    }
-
-    return countries[countryId]
-  }
+  
 
   cancelForm = () => {
     this.navController.navigateRoot('/barcode-form');
+  }
+
+  approvePhoto = () => {
+    if (!this.approved) {
+      this.approved = true
+      return
+    }
   }
 
   goForward = async () => {
@@ -116,12 +124,16 @@ export class CameraPage {
       const res = await this.formService.sendForm(this.formData, pickUpResult)
 
       this.openFinishPage('success', res, pickUpResult);
+
+      this.stopCamera()
     } catch (error) {
       console.error('formPrvd.sendForm', error);
       
       if (error && error.canDoAction) this.openFinishPage('error', error);
     } finally {
-      this.toolsService.hideLoader();
+      setTimeout(() => {
+        this.toolsService.hideLoader();
+      }, 1000)
     }
   }
 

@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
+import { DatePickerModule } from 'ionic4-date-picker';
 
 import { BarcodeFormPage } from './barcode-form.page';
 
@@ -19,6 +20,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
+    DatePickerModule,
     CommonModule,
     FormsModule,
     IonicModule,

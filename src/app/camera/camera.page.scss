@@ -1,8 +1,17 @@
 ion-content {
   --background: transparent;
-  --overflow: hidden;
   background-size: cover;
   background-position: center;
+
+  &.camera-on {
+    --overflow: hidden;
+  }
+
+  &.ios {
+    .info-list {
+      padding-top: env(safe-area-inset-top);
+    }
+  }
 
   .camera-box {
     position: relative;
@@ -58,6 +67,18 @@ ion-content {
 
 ion-footer {
   text-align: center;
+  background: #445dc5;
+
+  .take-photo-text {
+    margin-bottom: 25px;
+    --border-radius: 10px;
+    --padding-start: 2em;
+    --padding-end: 2em;
+    font-size: 14px;
+    color: #fff;
+    height: 48px;
+    text-transform: none;
+  }
 
   button {
     width: 80px;
@@ -94,19 +115,41 @@ ion-footer {
   }
 
   .footer-camera {
-    ion-button {
-      --border-radius: 10px;
-      --padding-start: 2em;
-      --padding-end: 2em;
-      font-size: 12px;
-      margin: 20px 4px;
-      color: #fff;
-      height: 48px;
+    &.camera-actions {
+      --background: #445dc5;
+      --border-width: 0;
+      margin-bottom: 16px;
+
+      ion-button {
+        min-width: 70px;
+        --border-radius: 10px;
+        --padding-start: 2em;
+        --padding-end: 2em;
+        font-size: 14px;
+        color: #fff;
+        height: 48px;
+      }
+
+      .back {
+        background: #e13838;
+        border-radius: 10px;
+      }
+    }
+
+    &.approved-actions {
+      ion-button {
+        --border-radius: 10px;
+        --padding-start: 2em;
+        --padding-end: 2em;
+        font-size: 14px;
+        margin: 20px 4px;
+        color: #fff;
+        height: 48px;
+      }
     }
 
     .forward {
       --background: #445dc5;
-      
     }
 
     .back {

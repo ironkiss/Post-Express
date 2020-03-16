@@ -27,16 +27,15 @@ export class AppComponent {
 
   initializeApp() {
 
-    console.log('moment', moment('2020-01-18').day())
-
     this.platform.ready().then(async () => {
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
 
-      let path = '/barcode-form'
+      let path = '/start'
+      // let path = '/barcode-form'
       try {
         await this.authService.isLogged()
-        path = '/barcode-form'
+        path = '/start'
       } catch (error) {
         path = '/sign-in'
       }

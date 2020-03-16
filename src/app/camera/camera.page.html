@@ -1,6 +1,7 @@
-<ion-content [ngStyle]="{'--background': photoTaken ? '#445dc5' : 'transparent'}">
+<ion-content [ngStyle]="{'--background': photoTaken ? '#445dc5' : 'transparent'}"
+  [ngClass]="{'camera-on': !approved}">
   <div class="camera-box"
-    *ngIf="!photoTaken"
+    *ngIf="!approved"
     [ngStyle]="{
       'width': cameraPreviewOpts.width + 'px',
       'height': cameraPreviewOpts.height + 'px'
@@ -11,19 +12,20 @@
     <img class="borders bottom-left" src="assets/icon/bottom-left.png">
     <img class="borders bottom-right" src="assets/icon/bottom-right.png">
   </div>
-  <div *ngIf="!photoTaken" class="camera-outside"></div>
-  <div *ngIf="photoTaken" class="info-list">
+  <div *ngIf="!approved" class="camera-outside"></div>
+  <div *ngIf="approved" class="info-list">
     <div class="info-item">
       <div><strong>Информация о вашей посылке</strong></div>
       <span>Проверьте информацию и подтвердите отправку</span>
     </div>
     <div class="info-item">
       <div>Номер: <strong>{{ formData.barcode }}</strong></div>
-      <div>Страна: <strong>{{ getCountryName(formData.country) }}</strong></div>
+      <div>Страна: <strong>{{ formService.getCountryName(formData.country) }}</strong></div>
       <div>Вес: <strong>{{ formData.weight }}</strong></div>
+      <div>Стоимость: <strong>{{ cost.price }}</strong></div>
     </div>
     <div class="info-item">
-      <div>Забрать посылку: <strong>{{ pickUpDate }}</strong></div>
+      <div>Забрать посылку: <strong>{{ pickUpDate || 'Не забирать' }}</strong></div>
     </div>
     <div class="info-item">
       <img *ngIf="photoTaken" [src]="'data:image/jpeg;base64,' + photoTaken">
@@ -36,11 +38,26 @@
     *ngIf="photoTaken" [ngClass]="{'left': photoTaken}">
     <img src="assets/icon/send.png">
   </button> -->
-  <button *ngIf="!photoTaken" ion-button class="take-photo" (click)="takePhoto()">
-    <!-- [ngClass]="{'right': photoTaken}"> -->
-    <!-- <img src="assets/icon/send.png" *ngIf="photoTaken"> -->
-  </button>
-  <ion-toolbar *ngIf="photoTaken" class="footer-camera">
+  <!-- <button *ngIf="!photoTaken" ion-button class="take-photo" (click)="takePhoto()">
+  </button> -->
+  <ion-button *ngIf="!photoTaken && !approved" fill="outline" color="light" ion-button class="take-photo-text" (click)="takePhoto()">
+    Сфотографировать квитанцию
+  </ion-button>
+  <ion-toolbar *ngIf="photoTaken && !approved" class="footer-camera camera-actions">
+    <ion-row>
+      <ion-col>
+        <ion-button class="back" fill="outline" color="light" (click)="cancelPhoto()" >
+          Повторить
+        </ion-button>
+      </ion-col>
+      <ion-col >
+        <ion-button class="forward" fill="outline" color="light" (click)="approvePhoto()">
+          Далее
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="approved" class="footer-camera approved-actions">
     <ion-row>
       <ion-col>
         <ion-button class="back" (click)="cancelForm()" >
