@@ -119,7 +119,7 @@ export class FormService {
         },
         pickupServices: {
           isBulkyGood: false,
-          hasLabel: false
+          hasLabel: true
         }
       },
       pickupAddress: {

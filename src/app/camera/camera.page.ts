@@ -7,7 +7,7 @@ import { CameraService } from '../camera.service';
 import { FormService } from '../form.service';
 
 import { CameraPreviewOptions, CameraPreview } from '@ionic-native/camera-preview/ngx';
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
 
 import * as moment from 'moment';
 

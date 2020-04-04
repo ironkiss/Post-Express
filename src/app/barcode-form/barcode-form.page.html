@@ -29,6 +29,18 @@
           <ion-item *ngIf="formData.barcode && pageStep === 1"
             [ngStyle]="{'padding-right': platform.is('ios') ? '10px' : null}">
             <input
+              *ngIf="platform.is('android')"
+              #weightInput
+              class="weight-input input"
+              [(ngModel)]="formData.weight"
+              type="number"
+              pattern="\d*"
+              placeholder="вес, кг"
+              (keyup)="checkForm('weight')"
+              item-right
+            >
+            <input
+              *ngIf="platform.is('ios')"
               #weightInput
               id="weightInput"
               class="weight-input input"
