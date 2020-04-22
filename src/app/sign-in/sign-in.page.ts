@@ -62,7 +62,11 @@ export class SignInPage {
       }).catch((err: any) => {
         this.toolsService.hideLoader();
         console.error('authPrvd.signIn', err);
-        this.toolsService.showToast('Неверные данные для входа');
+        if (err && err.status && err.status === 400) {
+          this.toolsService.showToast('Неверные данные для входа');
+        } else if (err && err.error) {
+          this.toolsService.showToast(err.error);
+        }
       });
     } else {
       this.authService.showErrors(formData.controls);

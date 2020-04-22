@@ -113,9 +113,10 @@ export class CameraPage {
   goForward = async () => {
     this.formData.image = this.photoTaken;
     this.toolsService.showLoader();
+    let pickUpResult
+    
 
     try {
-      let pickUpResult
       if (this.pickUpData) {
         const { formData, receiverAddress } = this.pickUpData
         pickUpResult = await this.formService.sendDHLrequest(formData, receiverAddress)
@@ -129,7 +130,13 @@ export class CameraPage {
     } catch (error) {
       console.error('formPrvd.sendForm', error);
       
-      if (error && error.canDoAction) this.openFinishPage('error', error);
+      if (error && error.canDoAction) {
+        this.openFinishPage('error', error, pickUpResult)
+      } else if (error && error.error && error.statusText) {
+        this.toolsService.showToast(error.error.statusText)
+      } else if (error && error.statusText) {
+        this.toolsService.showToast(error.statusText)
+      }
     } finally {
       setTimeout(() => {
         this.toolsService.hideLoader();

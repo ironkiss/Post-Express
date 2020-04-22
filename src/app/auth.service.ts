@@ -21,6 +21,7 @@ export class AuthService {
   ) {}
 
   logOut(): void {
+    this.apiService.authToken = undefined
     this.storage.remove('user_data');
     this.router.navigate(['']);
   }
@@ -45,17 +46,28 @@ export class AuthService {
       this.apiService.post('login', {
         name: login,
         password: password
-      }).subscribe((res: any) => {
-        const user = res.user;
-        user.token = res.token;
-        this.storage.set('user_data', user).then(() => {
-          this.userService.user = user;
-          this.apiService.authToken = user.token;
-          resolve(user);
-        }).catch((err: any) => {
-          console.error('Error storing item [user_data]', err);
-          reject(err);
-        });
+      }).then(({ data, status, error }: any) => {
+        switch (status) {
+          case 200: {
+            const user = data.user;
+            user.token = data.token;
+            this.storage.set('user_data', user).then(() => {
+              this.userService.user = user;
+              this.apiService.authToken = user.token;
+              resolve(user);
+            }).catch((err: any) => {
+              console.error('Error storing item [user_data]', err);
+              reject(err);
+            });
+            break
+          }
+          case 400: {
+            console.log('data, status, error', data, status, error)
+            reject({ status, error })
+            break
+          }
+        }
+        
       }, (err: any) => reject(err));
     });
   }

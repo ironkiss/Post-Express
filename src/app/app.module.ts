@@ -12,6 +12,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { ThemeableBrowser } from '@ionic-native/themeable-browser/ngx';
+import { HTTP } from '@ionic-native/http/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -33,6 +34,7 @@ import { AppRoutingModule } from './app-routing.module';
     SplashScreen,
     Keyboard,
     ThemeableBrowser,
+    HTTP,
     {
       provide : HTTP_INTERCEPTORS,
       useClass: APIInterceptor,

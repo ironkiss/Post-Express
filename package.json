@@ -24,8 +24,8 @@
     "@ionic-native/camera": "^5.16.0",
     "@ionic-native/camera-preview": "^5.15.1",
     "@ionic-native/core": "^5.0.0",
-    "@ionic-native/date-picker": "^5.19.1",
     "@ionic-native/device": "^5.15.1",
+    "@ionic-native/http": "^5.23.0",
     "@ionic-native/in-app-browser": "^5.15.1",
     "@ionic-native/keyboard": "^5.16.0",
     "@ionic-native/splash-screen": "^5.0.0",
@@ -33,13 +33,15 @@
     "@ionic-native/themeable-browser": "^5.15.1",
     "@ionic/angular": "^4.11.3",
     "@ionic/storage": "^2.2.0",
-    "cordova-android": "^7.1.4",
+    "cordova-android": "^8.1.0",
     "cordova-ios": "^5.1.1",
+    "cordova-plugin-advanced-http": "^2.4.1",
     "cordova-plugin-camera": "^4.1.0",
     "cordova-plugin-camera-preview": "^0.11.0",
     "cordova-plugin-datepicker": "^0.9.3",
     "cordova-plugin-decimal-key": "^1.1.2",
     "cordova-plugin-device": "^2.0.2",
+    "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-inappbrowser": "^3.1.0",
     "cordova-plugin-themeablebrowser": "^0.2.18",
     "cordova-sqlite-storage": "^3.4.0",
@@ -98,11 +100,14 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-plugin-datepicker": {},
-      "cordova-plugin-decimal-key": {}
+      "cordova-plugin-decimal-key": {},
+      "cordova-plugin-advanced-http": {
+        "OKHTTP_VERSION": "3.10.0"
+      }
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

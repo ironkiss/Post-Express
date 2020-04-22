@@ -6,10 +6,7 @@ import { FormService } from '../form.service';
 import { ToolsService } from '../tools.service';
 import { UserService } from '../user.service';
 
-import { BarcodeScanner,
-  BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
-import { Keyboard } from '@ionic-native/keyboard/ngx';
-import { DatePicker } from '@ionic-native/date-picker/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 import * as moment from 'moment';
 
@@ -41,34 +38,14 @@ export class BarcodeFormPage  {
 
   constructor(
     public alertController: AlertController,
+    public platform: Platform,
     private barcodeScanner: BarcodeScanner,
     private formService: FormService,
     private toolsService: ToolsService,
     private navController: NavController,
-    private keyboard: Keyboard,
-    private platform: Platform,
-    private datePicker: DatePicker,
     private userService: UserService,
     private loadingController: LoadingController
   ) {
-    this.keyboard.onKeyboardShow().subscribe(() => {
-      // if (this.platform.is('ios')) {
-      //   const statusBarHeight = window.getComputedStyle(document.documentElement).getPropertyValue('--ion-safe-area-top')
-      //   const bodyHeight = document.body.offsetHeight
-      //   const contentHeoght = document.getElementsByTagName('ion-content')[0].offsetHeight
-      //   const footerHeight = document.getElementsByTagName('ion-footer')[0].offsetHeight
-
-      //   const footerPadding = bodyHeight - contentHeoght + footerHeight - parseInt(statusBarHeight)
-      //   document.getElementsByTagName('ion-footer')[0].style.paddingBottom = `${footerPadding}px`
-      // }
-    })
-
-    this.keyboard.onKeyboardWillHide().subscribe(() => {
-      // if (this.platform.is('ios')) {
-      //   document.getElementsByTagName('ion-footer')[0].style.paddingBottom = '0px'
-      // }
-    })
-
     this.formatDates()
   }
 
@@ -147,8 +124,8 @@ export class BarcodeFormPage  {
       if (this.formData.country && this.formData.weight) {
         if (type !== 'weight') this.toolsService.showLoader();
         this.formService.getCost({
-          country: this.formData.country,
-          weight: this.formData.weight
+          country: Number(this.formData.country),
+          weight: Number(this.formData.weight)
         }).then((res: any) => {
           console.log('formService.getPrice', res);
           this.toolsService.hideLoader();
@@ -168,7 +145,7 @@ export class BarcodeFormPage  {
     });
   }
 
-  sendForm = async (eventType?: string) => {
+  sendForm = async () => {
     console.log('sendForm')
 
     if (this.pageStep === 1 || this.pageStep === 2) {
@@ -180,18 +157,9 @@ export class BarcodeFormPage  {
       } else if (this.formData.weight && this.pickUp && !this.selectedDate && this.userWantPickUp && this.pageStep === 1) {
         this.pageStep = 2
         this.selectedDate = moment(new Date(this.minDate)).format('YYYY-MM-DD')
-        // this.openCalendar()
         return
       }
     }
-
-    // this.selectedDate = this.checkDate(new Date(this.selectedDate))
-
-    // if (this.pickUp && !this.selectedDate && this.userWantPickUp) {
-    //   this.openCalendar()
-    //   // this.toolsService.showToast('Выберите дату для заказа курьера')
-    //   return
-    // }
 
     const loader = await this.loadingController.create({
       message: 'Загрузка...'
@@ -271,42 +239,6 @@ export class BarcodeFormPage  {
       this.toolsService.hideLoader()
     });
   }
-
-  // openCalendar = () => {
-  //   this.toolsService.showLoader()
-  //   this.datePicker.show({
-  //     date: this.minDate,
-  //     minDate: this.minDate,
-  //     maxDate: this.maxDate,
-  //     titleText: 'Выберите дату для заказа курьера',
-  //     okText: 'Выбрать',
-  //     doneButtonLabel: 'Выбрать',
-  //     cancelText: 'Не забирать',
-  //     cancelButtonLabel: 'Не забирать',
-  //     allowOldDates: false,
-  //     mode: 'date',
-  //     androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_DARK
-  //   }).then(date => {
-  //     this.selectedDate = this.checkDate(date)
-  //     this.userWantPickUp = true
-  //     // if (this.selectedDate) {
-  //     setTimeout(() => {
-  //       this.sendForm()
-  //       this.toolsService.hideLoader()
-  //     }, 3000)
-  //     // }
-  //     console.log('Got date: ', this.selectedDate)
-  //   }).catch(error => {
-  //     console.log('Error occurred while getting date: ', error)
-  //     if (error === 'cancel') {
-  //       this.userWantPickUp = false
-  //       this.sendForm()
-  //     }
-  //     setTimeout(() => {
-  //       this.toolsService.hideLoader()
-  //     }, 1000)
-  //   });
-  // }
 
   onSelectDate = (date) => {
     this.selectedDate = this.checkDate(date)

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams }   from '@angular/common/http';
-// import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-// import 'rxjs/add/operator/map';
+
+import { HTTP } from '@ionic-native/http/ngx';
+
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -14,69 +15,62 @@ export class APIService {
   private siteDomain: string = 'post-express.eu/api/public/index.php';
   private url: string = `${this.protocol}://${this.siteDomain}/api/v1`;
 
-  constructor(public http: HttpClient) {}
+  constructor(public http: HttpClient, private nativeHTTP: HTTP) {}
 
   get(endpoint: string, params?: any, options?: any) {
     if (!options) { options = {}; }
     const url = options && options.url || this.url
+    const headers = this.createHeaders(options);
 
-    if (params) {
-      const httpParams = new HttpParams();
-      for(let k in params) {
-        httpParams.set(k, params[k]);
-      }
+    console.log('headers', headers)
 
-      options.params = !options.params && httpParams || options.params;
-    }
-
-    options = this.createAuthorizationHeader(options);
-
-    console.log('options', options)
-
-    return this.http.get(`${url}/${endpoint}`, options);
+    return this.nativeHTTP.get(`${url}/${endpoint}`, params, headers);
   }
 
   post(endpoint: string, params: any, options?: any) {
     const url = options && options.url || this.url
+    const headers = this.createHeaders(options);
 
-    options = this.createAuthorizationHeader(options);
-    const body = new FormData();
-    for (const key of Object.keys(params)) {
-      body.append(key, params[key])
-    }
-    console.log('body', JSON.stringify(params), options)
+    console.log('url', url)
+    console.log('params', params)
+    console.log('headers', headers)
 
-    return this.http.post(`${url}/${endpoint}`, params, options);
+    return new Promise((resolve, reject) => {
+      this.nativeHTTP.post(`${url}/${endpoint}`, params, headers).then(data => {
+        console.log('data', data)
+        resolve({
+          data: JSON.parse(data.data),
+          status: data.status
+        })
+      }).catch(error => {
+        console.log('error', error)
+        reject({
+          error: JSON.parse(error.error),
+          status: error.status
+        })
+      });
+    })
   }
 
-  put(endpoint: string, body: any, options?: any) {
-    options = this.createAuthorizationHeader(options);
-    return this.http.put(`${this.url}/${endpoint}`, body, options);
-  }
-
-  delete(endpoint: string, body: any, options?: any) {
-    options = this.createAuthorizationHeader(options);
-    return this.http.post(`${this.url}/${endpoint}`, body, options);
-  }
-
-  patch(endpoint: string, body: any, options?: any) {
-    options = this.createAuthorizationHeader(options);
-    return this.http.patch(`${this.url}/${endpoint}`, body, options);
-  }
-
-  private createAuthorizationHeader(options: any): any {
+  private createHeaders(options: any): any {
     if (!options) {
       options = {};
     }
 
-    // const headers = new HttpHeaders({
-    //   'Accept': 'application/json',
-    //   'Access-Control-Allow-Origin': '*',
-    //   'Authorization': this.authToken ? `Bearer ${this.authToken}` : null
-    // });
-    //
-    // options.headers = headers;
+    const headers = options.headers || {}
 
-    return options;
+    if (!headers['Accept']) {
+      headers['Accept'] = 'application/json'
+    }
+
+    if (!headers['Content-Type']) {
+      headers['Content-Type'] = 'application/json'
+    }
+
+    if (this.authToken && !headers['Authorization']) {
+      headers['Authorization'] = `Bearer ${this.authToken}`
+    }
+
+    return headers;
   }
 }

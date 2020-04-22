@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams }   from '@angular/common/http';
 
 import { ToolsService } from './tools.service';
 import { APIService } from './api.service';
@@ -12,7 +13,8 @@ export class FormService {
   constructor(
     private toolsService: ToolsService,
     private apiService: APIService,
-    private authService: AuthService
+    private authService: AuthService,
+    private http: HttpClient
   ) {}
 
   getCountryName = (countryId: string) => {
@@ -26,7 +28,8 @@ export class FormService {
   }
 
   getCost = (data: any): Promise<any> => new Promise((resolve, reject) => {
-    this.apiService.post('calculate', data).subscribe((res: any) => {
+    this.apiService.post('calculate', data).then(({ data: res, status, error }: any) => {
+      console.log('calculate', res, status, error)
       resolve(res);
     }, (err: any) => reject());
   });
@@ -36,8 +39,8 @@ export class FormService {
       ...formData,
       pickUpResult
     }
-    this.apiService.post('barcode', formData).subscribe((res: any) => {
-      resolve(res);
+    this.apiService.post('barcode', formData).then(({ data }: any) => {
+      resolve(data);
     }, (err: any) => {
       this.errorsAction(err).then(() => reject({ canDoAction: true }))
         .catch(() => reject());
@@ -47,8 +50,8 @@ export class FormService {
   validateBarcode = (barcode: string): Promise<any> => new Promise((resolve, reject) => {
     this.apiService.post('validate_barcode', {
       barcode
-    }).subscribe((res: any) => {
-      resolve(res);
+    }).then(({ data }: any) => {
+      resolve(data);
     }, (err: any) => reject(err));
   });
 
@@ -154,15 +157,14 @@ export class FormService {
   getReceiverAddress = (pickUpId): Promise<any> => new Promise((resolve, reject) => {
     this.apiService.post('get_receiver_address', {
       address_id: String(pickUpId)
-    }).subscribe((res: any) => {
-      resolve(res);
+    }).then(({ data }: any) => {
+      resolve(data);
     }, (err: any) => reject(err));
   })
 
   sendDHLrequest = (data, receiverAddress) => new Promise((resolve, reject) => {
     const url = 'https://cig.dhl.de/services/production/rest'
-    this.apiService.post('pick-up/', data, {
-      url,
+    const options = {
       headers: {
         'DPDHL-User-Authentication-Token': btoa(`${receiverAddress['dpdhl-username']}:${receiverAddress['dpdhl-password']}`),
         'Accept': 'application/json',
@@ -170,8 +172,15 @@ export class FormService {
         'Authorization': `Basic ${btoa(`${receiverAddress.login}:${receiverAddress.pw}`)}`,
         'cache-control': 'no-cache'
       }
-    }).subscribe((res: any) => {
-      resolve(res);
+    }
+    const body = new FormData();
+    for (const key of Object.keys(data)) {
+      body.append(key, data[key])
+    }
+    console.log('body', JSON.stringify(data), options)
+
+    this.http.post(`${url}/pick-up/`, data, options).subscribe((data: any) => {
+      resolve(data);
     }, (err: any) => reject(err));
   })
 
