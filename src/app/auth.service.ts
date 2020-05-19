@@ -72,6 +72,24 @@ export class AuthService {
     });
   }
 
+  getUserData = (): Promise<any> => new Promise((resolve, reject) => {
+    this.apiService.get('user_data').then(({ data }: any) => {
+      const user = data.user
+      user.token = this.apiService.authToken
+      this.storage.set('user_data', user).then(() => {
+        this.userService.user = user;
+        console.log('apiService', user)
+        resolve(user);
+      }).catch((err: any) => {
+        console.error('Error storing item [user_data]', err);
+        reject(err);
+      });
+    }, (err: any) => {
+      console.log('apiService err', err)
+      reject(err)
+    });
+  })
+
   signOut(): Promise<any> {
     return this.storage.remove('user_data');
   }

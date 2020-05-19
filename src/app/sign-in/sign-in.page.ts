@@ -75,7 +75,7 @@ export class SignInPage {
 
   becomePartner = () => {
     const url = 'http://post-express.eu/?do=feedback';
-    this.toolsService.openBrowser(url)
+    this.toolsService.openBrowser(url, 'Стать партнёром')
   }
 
 }

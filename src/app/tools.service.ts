@@ -61,7 +61,7 @@ export class ToolsService {
     this.toast.present();
   }
 
-  openBrowser = (url: string) => {
+  openBrowser = (url: string, title: string) => {
 
     const options: ThemeableBrowserOptions = {
       toolbar: {
@@ -75,7 +75,7 @@ export class ToolsService {
       },
       title: {
         color: '#ffffffff',
-        staticText: 'Стать партнёром',
+        staticText: title,
       },
       backButtonCanClose: true,
     };

@@ -85,13 +85,13 @@ export class StartPage {
 
   leaveFeedback = () => {
     const url = 'http://post-express.eu/?do=feedback&template=card&mailtemplate=bestellen&agent=' + this.loginData.name;
-    this.toolsService.openBrowser(url)
+    this.toolsService.openBrowser(url, 'Расходный материал')
   }
 
   tracking = async () => {
     const openBrowser = (track: string) => {
       const url = 'http://post-express.eu/?do=tracking&track=' + track;
-      this.toolsService.openBrowser(url)
+      this.toolsService.openBrowser(url, 'Отследить посылку')
     }
 
     const alert = await this.alertController.create({
@@ -172,6 +172,16 @@ export class StartPage {
       ]
     });
     confirm.present();
+  }
+
+  async ionViewWillEnter() {
+    try {
+      await this.authService.getUserData()
+      this.getUserData()
+    } catch (error) {
+      console.log(error)
+      this.navController.navigateRoot('/sign-in')
+    }
   }
 
 }
