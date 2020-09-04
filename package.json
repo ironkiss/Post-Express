@@ -33,7 +33,7 @@
     "cordova-plugin-camera-preview": "^0.9.0",
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-device": "^1.1.7",
-    "cordova-plugin-inappbrowser": "^1.7.2",
+    "cordova-plugin-inappbrowser": "^3.1.0",
     "cordova-plugin-ionic-webview": "^1.1.16",
     "cordova-plugin-splashscreen": "^4.1.0",
     "cordova-plugin-themeablebrowser": "^0.2.17",
